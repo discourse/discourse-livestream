@@ -38,6 +38,8 @@ export default class EmbedableChatChannel extends Component {
   }
 
   initializeChat() {
+    const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
+
     this.topicModel = this.topicController?.model;
     this.topicChannelId = this.topicModel?.chat_channel_id;
 
@@ -48,25 +50,29 @@ export default class EmbedableChatChannel extends Component {
       });
     }
 
-    later(() =>{
-      const chatChannel = document.querySelector('.embeddable-chat-channel');
-      const parentElement = document.querySelector('.topic-body').parentNode;
-      parentElement.appendChild(chatChannel);
+    later(() => {
+      if (!this.shouldRender) {
+        this.embeddableChat.activeChannel = null;
+        const parentElement = document.querySelector(".discourse-root");
+        parentElement.prepend(sidebar);
+
+        document.body.classList.add("has-sidebar-page");
+        document.body.classList.add("docked");
+
+        return;
+      }
+
+      const parentElement = document.querySelector("#main");
+      parentElement.prepend(sidebar);
+
+      if (!this.topicChannelId) {
+        return;
+      }
+      this.chatChannelsManager.find(this.topicChannelId).then((channel) => {
+        this.embeddableChat.activeChannel = channel;
+        return channel;
+      });
     }, 100);
-
-    if (!this.shouldRender) {
-      this.embeddableChat.activeChannel = null;
-      return;
-    }
-
-
-    if (!this.topicChannelId) {
-      return;
-    }
-    this.chatChannelsManager.find(this.topicChannelId).then((channel) => {
-      this.embeddableChat.activeChannel = channel;
-      return channel;
-    });
   }
 
   #isUrlAllowedForChat(url) {
@@ -109,7 +115,7 @@ export default class EmbedableChatChannel extends Component {
       return false;
     }
 
-    return this.embeddableChat.activeChannel ? true : false;
+    return !!this.embeddableChat.activeChannel;
   }
 
   get isConferencePage() {

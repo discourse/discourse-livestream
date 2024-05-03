@@ -597,6 +597,12 @@ body.conference-page:not(.custom-chat-enabled) {
 }
 
 body.custom-chat-enabled {
+  .discourse-root {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+  }
+
   &.remove-scroll-x {
     overflow-x: hidden !important;
   }
