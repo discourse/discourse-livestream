@@ -1,0 +1,12 @@
+en:
+  js:
+    admin:
+      web_hooks:
+        user_event:
+          register_dev_days_conference: User registered on the Dev Days Conference
+        voting_event:
+          submit_survey_response: User submitted a livestream survey response
+    discourse_livestream:
+      notifications:
+        label: "Solved Notifications"
+        dont_send_accepted_solution_notifications: "Don't send me a notitification PM to recommend similar topics to answer"
