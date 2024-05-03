@@ -7,7 +7,7 @@ module ::DiscourseLivestream
     before_action :ensure_admin, only: [:create]
 
     def create
-      survey = ConferenceSurvey.new(survey_params.merge(conference_stage_session_id: @session.id))
+      survey = ConferenceSurvey.new(survey_params.merge(discourse_conference_stage_session_id: @session.id))
 
       if survey.save
         MessageBus.publish(

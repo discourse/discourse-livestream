@@ -11,6 +11,6 @@ class CreateConferenceStreams < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_foreign_key :discourse_conference_streams, :conferences
+    add_foreign_key :discourse_conference_streams, :discourse_conferences
   end
 end

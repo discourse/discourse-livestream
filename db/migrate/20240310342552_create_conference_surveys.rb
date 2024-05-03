@@ -2,7 +2,7 @@
 class CreateConferenceSurveys < ActiveRecord::Migration[7.0]
   def change
     create_table :discourse_conference_surveys do |t|
-      t.integer :conference_stage_session_id, null: false
+      t.integer :discourse_conference_stage_session_id, null: false
       t.string :title
 
       t.timestamps

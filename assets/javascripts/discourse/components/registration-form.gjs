@@ -388,6 +388,11 @@ export default class RegistrationForm extends Component {
             />
 
             <div class="label">
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
               By
               <span role="button" {{on "click" this.toggleTos}}>clicking
                 register, you understand and agree to

@@ -13,6 +13,6 @@ class CreateConferenceAttendeesTable < ActiveRecord::Migration[7.0]
     end
 
     add_foreign_key :discourse_conference_attendees, :users
-    add_foreign_key :discourse_conference_attendees, :conferences
+    add_foreign_key :discourse_conference_attendees, :discourse_conferences
   end
 end
