@@ -49,8 +49,8 @@ export default class EmbedableChatChannel extends Component {
     }
 
     later(() =>{
-      var chatChannel = document.querySelector('.embeddable-chat-channel');
-      var parentElement = document.querySelector('.topic-body').parentNode;
+      const chatChannel = document.querySelector('.embeddable-chat-channel');
+      const parentElement = document.querySelector('.topic-body').parentNode;
       parentElement.appendChild(chatChannel);
     }, 100);
 
