@@ -807,6 +807,10 @@ body.custom-chat-enabled {
     position: sticky;
     top: 60px; // Height of the banner
 
+    #channel-composer {
+      height: auto !important;
+    }
+
     .chat-collapsible-toggle-button {
       cursor: pointer;
       border: none;

@@ -25,6 +25,7 @@ export default class EmbedableChatChannel extends Component {
   @tracked topicModel = null;
   @tracked topicChannelId = null;
   @tracked isChatCollapsed = false;
+  @tracked loadingChannel = false;
 
   constructor() {
     super(...arguments);
@@ -32,50 +33,41 @@ export default class EmbedableChatChannel extends Component {
       return;
     }
     this.chatStateManager.prefersDrawer(); // This will avoid opening threads in full page.
-
     this.appEvents.on("page:changed", this, this.initializeChat);
     window.addEventListener("resize", this.handleResize);
   }
 
-  initializeChat() {
-    const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
+  async findChannel(channelId) {
+    try {
+      this.loadingChannel = true;
+      this.embeddableChat.activeChannel = await this.chatChannelsManager.find(
+        channelId
+      );
+    } finally {
+      this.loadingChannel = false;
+    }
+  }
 
+  initializeChat() {
     this.topicModel = this.topicController?.model;
     this.topicChannelId = this.topicModel?.chat_channel_id;
 
     if (this.currentUser && this.topicChannelId) {
-      this.chatChannelsManager.find(this.topicChannelId).then((channel) => {
-        this.embeddableChat.activeChannel = channel;
-        return (this.activeChannel = channel);
-      });
+      const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
+      const parentElement = document.querySelector("#main");
+      parentElement.prepend(sidebar);
+      return this.findChannel(this.topicChannelId);
     }
 
-    later(() => {
-      if (!this.shouldRender) {
-        this.embeddableChat.activeChannel = null;
-        const parentElement = document.querySelector(".discourse-root");
-        parentElement.prepend(sidebar);
-
-        document.body.classList.add("has-sidebar-page");
-        document.body.classList.add("docked");
-
-        return;
-      }
-
-      if (!this.topicChannelId) {
-        return;
-      }
-      this.chatChannelsManager.find(this.topicChannelId).then((channel) => {
-        this.embeddableChat.activeChannel = channel;
-
-        later(() => {
-          const parentElement = document.querySelector("#main");
-          parentElement.prepend(sidebar);
-        }, 500);
-
-        return channel;
-      });
-    }, 100);
+    if (!this.shouldRender) {
+      this.embeddableChat.activeChannel = null;
+      const parentElement = document.querySelector(".discourse-root");
+      const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
+      parentElement.prepend(sidebar);
+      document.body.classList.add("has-sidebar-page");
+      document.body.classList.add("docked");
+      return;
+    }
   }
 
   #isUrlAllowedForChat(url) {
@@ -108,6 +100,7 @@ export default class EmbedableChatChannel extends Component {
 
   get shouldRender() {
     if (
+      this.loadingChannel ||
       !this.currentUser ||
       !this.siteSettings.enable_livestream_chat ||
       !this.embeddableChat.activeChannel ||
