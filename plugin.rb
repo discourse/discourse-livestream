@@ -44,8 +44,6 @@ after_initialize do
     ../app/serializers/discourse_livestream/conference_survey_response_serializer
     ../app/serializers/discourse_livestream/conference_survey_serializer
     ../app/models/discourse_livestream/conference_user_stage_session
-    ../app/jobs/regular/answer_similar_questions
-    ../app/jobs/scheduled/mark_as_solution
     ../lib/discourse_livestream/chat_channel_extension
     ../lib/discourse_livestream/topic_extension
     ../lib/discourse_livestream/handle_chat_channel_creation
@@ -78,8 +76,6 @@ after_initialize do
   end
 
   Discourse::Application.routes.append { mount ::DiscourseLivestream::Engine, at: "/" }
-
-  on(:accepted_solution) { |post| Jobs.enqueue(:answer_similar_questions, post_id: post.id) }
 
   User.register_custom_field_type(DiscourseLivestream::USER_CUSTOM_FIELD_NAME, :boolean)
   register_editable_user_custom_field(DiscourseLivestream::USER_CUSTOM_FIELD_NAME)
