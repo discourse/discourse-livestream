@@ -1,4 +1,3 @@
-import { later, next } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 function showCustomBBCode(isGoing = false) {
@@ -126,9 +125,6 @@ async function updateTopicStylesWithChatChannel(topic, store, currentUser) {
     );
     showCustomBBCode(isGoing);
     document.body.classList.add("custom-chat-enabled");
-    const chatOutletContainer = document.querySelector(
-      ".chat-drawer-outlet-container"
-    );
   } finally {
     if (!isGoing) {
       document.body.classList.remove("confirmed-event-assistance");
