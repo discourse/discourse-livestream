@@ -62,14 +62,17 @@ export default class EmbedableChatChannel extends Component {
         return;
       }
 
-      const parentElement = document.querySelector("#main");
-      parentElement.prepend(sidebar);
-
       if (!this.topicChannelId) {
         return;
       }
       this.chatChannelsManager.find(this.topicChannelId).then((channel) => {
         this.embeddableChat.activeChannel = channel;
+
+        next(() => {
+          const parentElement = document.querySelector("#main");
+          parentElement.prepend(sidebar);
+        });
+
         return channel;
       });
     }, 100);
