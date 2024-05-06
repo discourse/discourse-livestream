@@ -53,11 +53,11 @@ export default class EmbedableChatChannel extends Component {
     this.topicChannelId = this.topicModel?.chat_channel_id;
 
     if (this.currentUser && this.topicChannelId) {
-      later(() => {
-        const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
-        const parentElement = document.querySelector("#main");
-        parentElement.prepend(sidebar);
-      }, 100);
+      // later(() => {
+      const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
+      const parentElement = document.querySelector("#main");
+      parentElement.prepend(sidebar);
+      // }, 100);
       return this.findChannel(this.topicChannelId);
     }
 
