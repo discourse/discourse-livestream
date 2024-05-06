@@ -68,10 +68,10 @@ export default class EmbedableChatChannel extends Component {
       this.chatChannelsManager.find(this.topicChannelId).then((channel) => {
         this.embeddableChat.activeChannel = channel;
 
-        next(() => {
+        later(() => {
           const parentElement = document.querySelector("#main");
           parentElement.prepend(sidebar);
-        });
+        }, 500);
 
         return channel;
       });
