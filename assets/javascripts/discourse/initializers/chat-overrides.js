@@ -106,6 +106,8 @@ function overrideChat(api, container) {
       document
         .querySelector(".embeddable-chat-channel")
         .style.setProperty("display", "none", "important");
+      document.body.classList.remove("custom-chat-enabled");
+      appEvents.trigger("chat:toggle-close");
     } else {
       updateTopicStylesWithChatChannel(topic, store, currentUser);
     }
