@@ -102,43 +102,43 @@ function overrideChat(api, container) {
       return;
     }
 
-    next(async () => {
-      if (!topic || !topic.model || !topic.model.chat_channel_id) {
-        return;
-      }
-
-      const attendees = await store.findAll("discourse-post-event-invitee", {
-        undefined,
-        post_id: topic.currentPostId,
-        type: "going",
-      });
-
-      const isGoing = attendees.content.some(
-        (attendee) => attendee.user.id === currentUser.id
-      );
-
-      showCustomBBCode(isGoing);
-      document.body.classList.add("custom-chat-enabled");
-
-      const chatOutletContainer = document.querySelector(
-        ".chat-drawer-outlet-container"
-      );
-      chatOutletContainer.style.display = "none";
-      later(function () {
-        chatOutletContainer.style.display = "";
-
-        if (!isGoing) {
-          document.body.classList.remove("confirmed-event-assistance");
-        } else {
-          document.body.classList.add("confirmed-event-assistance");
-        }
-
-        document
-          .querySelector(".embeddable-chat-channel")
-          .style.setProperty("display", "block", "important");
-      }, 500);
-    });
+    if (!topic?.model?.chat_channel_id) {
+      // don't show the chat if there is no chat channel
+      document
+        .querySelector(".embeddable-chat-channel")
+        .style.setProperty("display", "none", "important");
+    } else {
+      updateTopicStylesWithChatChannel(topic, store, currentUser);
+    }
   });
+}
+
+async function updateTopicStylesWithChatChannel(topic, store, currentUser) {
+  let isGoing;
+  try {
+    const attendees = await store.findAll("discourse-post-event-invitee", {
+      undefined,
+      post_id: topic.currentPostId,
+      type: "going",
+    });
+    isGoing = attendees.content.some(
+      (attendee) => attendee.user.id === currentUser.id
+    );
+    showCustomBBCode(isGoing);
+    document.body.classList.add("custom-chat-enabled");
+    const chatOutletContainer = document.querySelector(
+      ".chat-drawer-outlet-container"
+    );
+  } finally {
+    if (!isGoing) {
+      document.body.classList.remove("confirmed-event-assistance");
+    } else {
+      document.body.classList.add("confirmed-event-assistance");
+    }
+    document
+      .querySelector(".embeddable-chat-channel")
+      .style.setProperty("display", "block", "important");
+  }
 }
 
 export default {
