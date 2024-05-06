@@ -19,10 +19,7 @@ after_initialize do
     SUBMIT_SURVEY_RESPONSE = 8438.freeze
   end
 
-  SeedFu.fixture_paths << Rails
-    .root
-    .join("plugins", "discourse-livestream", "db", "fixtures")
-    .to_s
+  SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-livestream", "db", "fixtures").to_s
 
   ::ActionController::Base.prepend_view_path File.expand_path("../app/views/", __FILE__)
 
@@ -77,8 +74,7 @@ after_initialize do
     get "/conference/agenda" => "conferences#agenda"
     post "/conference/surveys/stage_session/:conference_stage_session_id/create",
          to: "conference_surveys#create"
-    post "/conference/surveys/:survey_id/submit_response",
-         to: "conference_surveys#submit_response"
+    post "/conference/surveys/:survey_id/submit_response", to: "conference_surveys#submit_response"
   end
 
   Discourse::Application.routes.append { mount ::DiscourseLivestream::Engine, at: "/" }
@@ -93,19 +89,17 @@ after_initialize do
     User.prepend DiscourseLivestream::UserExtension
     Category.prepend DiscourseLivestream::CategoryExtension
 
-    if SiteSetting.enable_livestream_chat
-      Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
-      Topic.prepend DiscourseLivestream::TopicExtension
+    Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
+    Topic.prepend DiscourseLivestream::TopicExtension
 
-      add_to_serializer(:topic_view, :chat_channel_id) { object.topic&.chat_channel&.id }
+    add_to_serializer(:topic_view, :chat_channel_id) { object.topic&.chat_channel&.id }
 
-      DiscourseEvent.on(:post_edited) do |post, _, _|
-        DiscourseLivestream.handle_chat_channel_creation(post.topic)
-      end
+    DiscourseEvent.on(:post_edited) do |post, _, _|
+      DiscourseLivestream.handle_chat_channel_creation(post.topic)
+    end
 
-      DiscourseEvent.on(:topic_created) do |topic, _, _|
-        DiscourseLivestream.handle_chat_channel_creation(topic)
-      end
+    DiscourseEvent.on(:topic_created) do |topic, _, _|
+      DiscourseLivestream.handle_chat_channel_creation(topic)
     end
 
     add_to_serializer(:site_category, :chat_channel_id) { object&.chat_channel&.chatable_id }
