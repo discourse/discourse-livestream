@@ -1073,3 +1073,13 @@ body.custom-chat-enabled {
     }
   }
 }
+
+#in-topic-livestream-chat-toggle {
+  width: 100%;
+}
+
+html.mobile-view body.tag-livestream #custom-chat-container {
+  max-height: 400px !important;
+  height: 400px !important;
+  margin-top: 1em;
+}

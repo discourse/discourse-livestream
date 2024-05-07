@@ -10,3 +10,4 @@ en:
       notifications:
         label: "Solved Notifications"
         dont_send_accepted_solution_notifications: "Don't send me a notitification PM to recommend similar topics to answer"
+      chat: "Livestream Chat"

@@ -40,6 +40,7 @@ async function onAcceptInvite({ status, chatChannelsManager, topic }) {
 
 function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
+  const site = container.lookup("service:site");
   if (!siteSettings.enable_livestream_chat) {
     return;
   }
@@ -109,7 +110,9 @@ function overrideChat(api, container) {
       document.body.classList.remove("custom-chat-enabled");
       appEvents.trigger("chat:toggle-close");
     } else {
-      updateTopicStylesWithChatChannel(topic, store, currentUser);
+      if (!site.mobileView) {
+        updateTopicStylesWithChatChannel(topic, store, currentUser);
+      }
     }
   });
 }
