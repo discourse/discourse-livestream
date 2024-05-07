@@ -1,10 +1,9 @@
 import Component from "@glimmer/component";
-import { inject as service } from "@ember/service";
-import EmbedableChatChannel from "../../components/embeddable-chat-channel";
-import DButton from "discourse/components/d-button";
 import { tracked } from "@glimmer/tracking";
-import { and } from "truth-helpers";
 import { action } from "@ember/object";
+import { service } from "@ember/service";
+import DButton from "discourse/components/d-button";
+import EmbedableChatChannel from "../../components/embeddable-chat-channel";
 
 export default class MobileEmbedableChatChannel extends Component {
   @service site;
