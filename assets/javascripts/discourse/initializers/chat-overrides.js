@@ -110,14 +110,17 @@ function overrideChat(api, container) {
       document.body.classList.remove("custom-chat-enabled");
       appEvents.trigger("chat:toggle-close");
     } else {
-      if (!site.mobileView) {
-        updateTopicStylesWithChatChannel(topic, store, currentUser);
-      }
+      updateTopicStylesWithChatChannel(topic, store, currentUser, site);
     }
   });
 }
 
-async function updateTopicStylesWithChatChannel(topic, store, currentUser) {
+async function updateTopicStylesWithChatChannel(
+  topic,
+  store,
+  currentUser,
+  site
+) {
   let isGoing;
   try {
     const attendees = await store.findAll("discourse-post-event-invitee", {
@@ -125,11 +128,15 @@ async function updateTopicStylesWithChatChannel(topic, store, currentUser) {
       post_id: topic.currentPostId,
       type: "going",
     });
+
     isGoing = attendees.content.some(
       (attendee) => attendee.user.id === currentUser.id
     );
     showCustomBBCode(isGoing);
-    document.body.classList.add("custom-chat-enabled");
+
+    if (!site.mobileView) {
+      document.body.classList.add("custom-chat-enabled");
+    }
   } finally {
     if (!isGoing) {
       document.body.classList.remove("confirmed-event-assistance");
