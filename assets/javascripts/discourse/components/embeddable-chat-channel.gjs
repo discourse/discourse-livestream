@@ -53,19 +53,23 @@ export default class EmbedableChatChannel extends Component {
     this.topicChannelId = this.topicModel?.chat_channel_id;
 
     if (this.currentUser && this.topicChannelId) {
-      const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
-      const parentElement = document.querySelector("#main");
-      parentElement.prepend(sidebar);
+      if (!this.args.inTopic) {
+        const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
+        const parentElement = document.querySelector("#main");
+        parentElement.prepend(sidebar);
+      }
       return this.findChannel(this.topicChannelId);
     }
 
     if (!this.shouldRender) {
       this.embeddableChat.activeChannel = null;
-      const parentElement = document.querySelector(".discourse-root");
-      const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
-      parentElement.prepend(sidebar);
-      document.body.classList.add("has-sidebar-page");
-      document.body.classList.add("docked");
+      if (!this.args.inTopic) {
+        const parentElement = document.querySelector(".discourse-root");
+        const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
+        parentElement.prepend(sidebar);
+        document.body.classList.add("has-sidebar-page");
+        document.body.classList.add("docked");
+      }
       return;
     }
   }
