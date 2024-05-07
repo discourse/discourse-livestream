@@ -115,7 +115,7 @@ export default class EmbedableChatChannel extends Component {
   }
 
   get isConferencePage() {
-    return Boolean(!this.topicModel);
+    return Boolean(!this.topicModel) && !this.args.inTopic;
   }
 
   @action
@@ -144,6 +144,11 @@ export default class EmbedableChatChannel extends Component {
 
   @action
   handleResize() {
+    // don't resize the chat if we are in a topic
+    if (this.args.inTopic) {
+      return;
+    }
+
     document.body.classList.remove("has-sidebar-page");
     document.body.classList.remove("docked");
 
@@ -174,7 +179,6 @@ export default class EmbedableChatChannel extends Component {
   <template>
     {{#if this.shouldRender}}
       {{#if this.isConferencePage}}
-
         <DButton
           @icon={{if
             this.isChatCollapsed
