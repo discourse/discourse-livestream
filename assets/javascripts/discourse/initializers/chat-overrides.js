@@ -112,8 +112,7 @@ function overrideChat(api, container) {
       appEvents.trigger("chat:toggle-close");
     } else {
       updateTopicStylesWithChatChannel(topic, store, currentUser, site);
-      const sidebar = document.querySelector("body.has-sidebar-page");
-      if (sidebar) {
+      if (document.body.classList.contains("has-sidebar-page")) {
         applicationController.toggleSidebar();
       }
     }
