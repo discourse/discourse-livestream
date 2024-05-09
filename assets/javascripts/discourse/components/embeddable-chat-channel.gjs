@@ -19,6 +19,7 @@ export default class EmbedableChatChannel extends Component {
   @service conference;
   @service chatStateManager;
   @service router;
+  @service sidebarState;
   @controller("topic") topicController;
 
   @tracked showConferenceChannelsList = false;
@@ -63,14 +64,6 @@ export default class EmbedableChatChannel extends Component {
 
     if (!this.shouldRender) {
       this.embeddableChat.activeChannel = null;
-      if (!this.args.inTopic) {
-        const parentElement = document.querySelector(".discourse-root");
-        const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
-        parentElement.prepend(sidebar);
-        document.body.classList.add("has-sidebar-page");
-        document.body.classList.add("docked");
-      }
-      return;
     }
   }
 
@@ -152,9 +145,6 @@ export default class EmbedableChatChannel extends Component {
     if (this.args.inTopic) {
       return;
     }
-
-    document.body.classList.remove("has-sidebar-page");
-    document.body.classList.remove("docked");
 
     const chatDrawerElement = document.querySelector("#custom-chat-container");
 
