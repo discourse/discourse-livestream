@@ -1,7 +1,5 @@
 {
   "tests": {
-    "requiredPlugins": [
-      "https://github.com/discourse/discourse-solved"
-    ]
+    "requiredPlugins": ["https://github.com/discourse/discourse-solved"]
   }
 }

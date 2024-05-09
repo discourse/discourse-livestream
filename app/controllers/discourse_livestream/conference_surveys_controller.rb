@@ -7,7 +7,10 @@ module ::DiscourseLivestream
     before_action :ensure_admin, only: [:create]
 
     def create
-      survey = ConferenceSurvey.new(survey_params.merge(discourse_conference_stage_session_id: @session.id))
+      survey =
+        ConferenceSurvey.new(
+          survey_params.merge(discourse_conference_stage_session_id: @session.id),
+        )
 
       if survey.save
         MessageBus.publish(
@@ -51,7 +54,8 @@ module ::DiscourseLivestream
     end
 
     def find_session
-      @session = DiscourseLivestream::ConferenceStageSession.find(params[:conference_stage_session_id])
+      @session =
+        DiscourseLivestream::ConferenceStageSession.find(params[:conference_stage_session_id])
     rescue ActiveRecord::RecordNotFound
       render json: { error: "Session not found" }, status: :not_found
     end

@@ -15,7 +15,7 @@ export default {
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc nec",
         },
-      ]
+      ],
     },
     "Day 2": {
       "Stage 1": [
@@ -32,7 +32,7 @@ export default {
           description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc nec",
         },
-      ]
-    }
+      ],
+    },
   },
 };

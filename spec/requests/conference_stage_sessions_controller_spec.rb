@@ -23,9 +23,7 @@ RSpec.describe DiscourseLivestream::ConferenceStageSessionsController do
     }
   end
 
-  let(:sessions_url) do
-    "/conference/streams/#{stream.id}/stages/#{stage.id}/stage_sessions.json"
-  end
+  let(:sessions_url) { "/conference/streams/#{stream.id}/stages/#{stage.id}/stage_sessions.json" }
 
   before { sign_in(admin) }
 
