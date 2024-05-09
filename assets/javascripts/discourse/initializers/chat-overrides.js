@@ -53,6 +53,7 @@ function overrideChat(api, container) {
   const appEvents = container.lookup("service:appEvents");
   let topic = container.lookup("controller:topic");
   const currentUser = api.getCurrentUser();
+  const applicationController = container.lookup("controller:application");
 
   if (!currentUser || !chatService.userCanChat) {
     return;
@@ -111,6 +112,10 @@ function overrideChat(api, container) {
       appEvents.trigger("chat:toggle-close");
     } else {
       updateTopicStylesWithChatChannel(topic, store, currentUser, site);
+      const sidebar = document.querySelector("body.has-sidebar-page");
+      if (sidebar) {
+        applicationController.toggleSidebar();
+      }
     }
   });
 }
