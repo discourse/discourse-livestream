@@ -108,8 +108,6 @@ export default class ConferenceService extends Service {
       );
     }
 
-    return getURLWithCDN(
-      "/plugins/discourse-livestream/images/logo-sm.png"
-    );
+    return getURLWithCDN("/plugins/discourse-livestream/images/logo-sm.png");
   }
 }

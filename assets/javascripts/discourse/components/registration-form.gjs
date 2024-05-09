@@ -388,27 +388,20 @@ export default class RegistrationForm extends Component {
             />
 
             <div class="label">
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-              By
-              <span role="button" {{on "click" this.toggleTos}}>clicking
-                register, you understand and agree to
-              </span>
-              our Privacy Statement
+              <a href="#" target="_blank" rel="noopener noreferrer">
+                By
+                {{! template-lint-disable no-nested-interactive }}
+                <span role="button" {{on "click" this.toggleTos}}>clicking
+                  register, you understand and agree to
+                </span>
+                our Privacy Statement
               </a>
             </div>
 
           </div>
 
           <div class="form-group tou">
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Terms of Use</a>
+            <a href="#" target="_blank" rel="noopener noreferrer">Terms of Use</a>
           </div>
           <div class="form-group">
             {{#unless this.isLoading}}

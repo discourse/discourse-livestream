@@ -4,6 +4,6 @@ module.exports = {
   ...baseConfig,
   ignore: [
     ...(Array.isArray(baseConfig.ignore) ? baseConfig.ignore : []),
-    'assets/javascripts/discourse/components/streamer',
+    "assets/javascripts/discourse/components/streamer",
   ],
 };

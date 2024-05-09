@@ -18,7 +18,7 @@ export default class MobileEmbedableChatChannel extends Component {
   <template>
     {{#if this.site.mobileView}}
       <DButton
-        @label={{"discourse_livestream.chat"}}
+        @label="discourse_livestream.chat"
         @action={{this.toggleChat}}
         @icon={{if this.showChat "caret-down" "caret-up"}}
         id="in-topic-livestream-chat-toggle"
