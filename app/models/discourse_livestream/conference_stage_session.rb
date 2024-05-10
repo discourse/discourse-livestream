@@ -16,7 +16,7 @@ module DiscourseLivestream
 
     has_many :surveys,
              class_name: "DiscourseLivestream::ConferenceSurvey",
-             foreign_key: "conference_stage_session_id",
+             foreign_key: "discourse_conference_stage_session_id",
              dependent: :destroy
 
     class << self

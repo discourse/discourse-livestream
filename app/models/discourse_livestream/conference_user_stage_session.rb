@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module DiscourseLivestream
   class ConferenceUserStageSession < ActiveRecord::Base
-    self.table_name = "conference_user_stage_sessions"
+    self.table_name = "discourse_conference_user_stage_sessions"
 
     belongs_to :user
     belongs_to :stage_session,

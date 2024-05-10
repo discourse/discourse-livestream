@@ -5,10 +5,10 @@ module DiscourseLivestream
 
     belongs_to :conference_stage_session,
                class_name: "DiscourseLivestream::ConferenceStageSession",
-               foreign_key: "conference_stage_session_id"
+               foreign_key: "discourse_conference_stage_session_id"
     has_many :survey_responses,
              class_name: "ConferenceSurveyResponse",
-             foreign_key: "conference_survey_id",
+             foreign_key: "discourse_conference_survey_id",
              dependent: :destroy
 
     validates :title, presence: true

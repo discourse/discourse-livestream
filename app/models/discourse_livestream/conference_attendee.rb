@@ -5,6 +5,6 @@ module DiscourseLivestream
     belongs_to :conference,
                foreign_key: "discourse_conference_id",
                class_name: "DiscourseLivestream::Conference"
-    self.table_name = "conference_attendees"
+    self.table_name = "discourse_conference_attendees"
   end
 end

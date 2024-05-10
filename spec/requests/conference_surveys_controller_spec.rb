@@ -19,7 +19,7 @@ RSpec.describe DiscourseLivestream::ConferenceSurveysController do
         title: "Session Feedback",
         external_session_id: "ExtSession123",
       },
-      conference_stage_session_id: conference_stage_session.id,
+      disocurse_conference_stage_session_id: conference_stage_session.id,
     }
   end
 

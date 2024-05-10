@@ -26,7 +26,10 @@ module ::DiscourseLivestream
     def submit_response
       survey_response =
         ConferenceSurveyResponse.new(
-          survey_response_params.merge(conference_survey_id: @survey.id, user_id: current_user.id),
+          survey_response_params.merge(
+            discourse_conference_survey_id: @survey.id,
+            user_id: current_user.id,
+          ),
         )
       if survey_response.save
         payload = {
@@ -55,7 +58,9 @@ module ::DiscourseLivestream
 
     def find_session
       @session =
-        DiscourseLivestream::ConferenceStageSession.find(params[:conference_stage_session_id])
+        DiscourseLivestream::ConferenceStageSession.find(
+          params[:discourse_conference_stage_session_id],
+        )
     rescue ActiveRecord::RecordNotFound
       render json: { error: "Session not found" }, status: :not_found
     end

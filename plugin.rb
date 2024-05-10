@@ -70,7 +70,7 @@ after_initialize do
           "conference_stage_sessions#index"
     post "/conference/register" => "conferences#register"
     get "/conference/agenda" => "conferences#agenda"
-    post "/conference/surveys/stage_session/:conference_stage_session_id/create",
+    post "/conference/surveys/stage_session/:discourse_conference_stage_session_id/create",
          to: "conference_surveys#create"
     post "/conference/surveys/:survey_id/submit_response", to: "conference_surveys#submit_response"
   end
