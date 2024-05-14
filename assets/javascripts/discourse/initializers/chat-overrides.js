@@ -1,3 +1,4 @@
+import { later } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 function showCustomBBCode(isGoing = false) {
@@ -38,7 +39,7 @@ async function onAcceptInvite({ status, chatChannelsManager, topic }) {
   }
 }
 
-function overrideChat(api, container) {
+export function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
   const site = container.lookup("service:site");
   if (!siteSettings.enable_livestream_chat) {
@@ -115,6 +116,19 @@ function overrideChat(api, container) {
       if (document.body.classList.contains("has-sidebar-page")) {
         applicationController.toggleSidebar();
       }
+
+      // Chat scrolls to the bottom of the page when the chat channel is loaded
+      // this is required for the chat message positioning to be correct.
+      // We need to scroll to the top of the page after the chat channel is loaded
+      // to avoid the page being rendered and the viewport being scrolled to the bottom.
+      // This is not an ideal solution, but it's the best we can do for now
+      later(() => {
+        document.documentElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "start",
+        });
+      }, 400);
     }
   });
 }
