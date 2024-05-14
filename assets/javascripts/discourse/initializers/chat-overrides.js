@@ -39,7 +39,7 @@ async function onAcceptInvite({ status, chatChannelsManager, topic }) {
   }
 }
 
-export function overrideChat(api, container) {
+function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
   const site = container.lookup("service:site");
   if (!siteSettings.enable_livestream_chat) {
@@ -128,7 +128,7 @@ export function overrideChat(api, container) {
           block: "start",
           inline: "start",
         });
-      }, 400);
+      }, 500);
     }
   });
 }
