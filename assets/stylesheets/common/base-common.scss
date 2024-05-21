@@ -1,0 +1,39 @@
+body.tag-livestream.confirmed-event-assistance {
+  iframe[allowfullscreen] {
+    width: 100%;
+    height: calc(90vh - 10rem);
+  }
+
+  #post_1 .topic-avatar {
+    display: none;
+  }
+
+  .topic-navigation {
+    display: none;
+  }
+
+  .container.posts {
+    display: block;
+    width: 100%;
+
+    .topic-body {
+      width: 100%;
+      margin-right: 1em;
+    }
+  }
+}
+
+body.tag-livestream .chat-channel-preview-card {
+  .chat-channel-preview-card__browse-all {
+    display: none;
+  }
+
+  .chat-channel-title {
+    display: none;
+  }
+
+  .going-button {
+    background-color: var(--primary);
+    color: var(--secondary);
+  }
+}

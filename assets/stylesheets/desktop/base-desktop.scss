@@ -1,4 +1,11 @@
 body.tag-livestream {
+  // we need to fullscreen the header icons to match the chat panel
+  // being on the right side of the screen
+  .d-header-wrap .wrap {
+    margin: 0;
+    max-width: 100%;
+  }
+
   .discourse-root {
     display: flex;
     flex-wrap: wrap;
@@ -9,7 +16,7 @@ body.tag-livestream {
     }
 
     #main-outlet-wrapper {
-      margin-right: 400px;
+      margin-right: 410px;
     }
 
     .embeddable-chat-channel {
@@ -17,7 +24,7 @@ body.tag-livestream {
       top: var(--header-offset);
       right: 0;
       height: calc(100% - var(--header-offset));
-      overflow: hidden;
+      overflow-y: scroll;
       border-left: 2px solid var(--primary-very-low);
     }
   }

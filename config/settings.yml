@@ -4,7 +4,7 @@ plugins:
     client: true
   embeddable_chat_allowed_paths:
     type: list
-    default: "/conference|/t"
+    default: "/t"
     client: true
   topic_livestream_tag:
     default: "livestream"

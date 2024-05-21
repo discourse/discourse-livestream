@@ -10,8 +10,8 @@
 enabled_site_setting :enable_discourse_livestream
 
 register_asset "stylesheets/common/base-common.scss"
-register_asset "stylesheets/desktop/base-desktop.scss"
-register_asset "stylesheets/mobile/base-mobile.scss"
+register_asset "stylesheets/desktop/base-desktop.scss", :desktop
+register_asset "stylesheets/mobile/base-mobile.scss", :mobile
 
 after_initialize do
   module ::DiscourseLivestream

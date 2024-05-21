@@ -1,22 +1,15 @@
-import { later } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { schedule } from "@ember/runloop";
 
 function showCustomBBCode(isGoing = false) {
-  document.querySelectorAll(".cooked .preview").forEach(function (element) {
-    element.style.setProperty(
-      "display",
-      !isGoing ? "block" : "none",
-      "important"
-    );
+  const displayStyle = !isGoing ? "block" : "none";
+  const hiddenStyle = isGoing ? "block" : "none";
+
+  document.querySelectorAll(".cooked .preview").forEach((e) => {
+    e.style.setProperty("display", displayStyle, "important");
   });
 
-  document.querySelectorAll(".cooked .hidden").forEach(function (element) {
-    element.style.setProperty(
-      "display",
-      isGoing ? "block" : "none",
-      "important"
-    );
+  document.querySelectorAll(".cooked .hidden").forEach((e) => {
+    e.style.setProperty("display", hiddenStyle, "important");
   });
 }
 
@@ -30,6 +23,7 @@ async function onAcceptInvite({ status, chatChannelsManager, topic }) {
     document.body.classList.add("confirmed-event-assistance");
     return;
   }
+
   if (status !== "going") {
     showCustomBBCode(false);
 
@@ -42,76 +36,77 @@ async function onAcceptInvite({ status, chatChannelsManager, topic }) {
 
 function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
-  const currentUser = container.lookup("service:current-user");
   const applicationController = container.lookup("controller:application");
+  const currentUser = container.lookup("service:current-user");
+  const store = container.lookup("service:store");
   const topic = container.lookup("controller:topic");
+  const chatChannelsManager = container.lookup("service:chat-channels-manager");
+  const chatService = container.lookup("service:chat");
+  const chatSubscriptionsManager = container.lookup(
+    "service:chatSubscriptionsManager"
+  );
+  const appEvents = container.lookup("service:appEvents");
+
+  if (!currentUser || !chatService.userCanChat) {
+    return;
+  }
+
+  appEvents.on("calendar:update-invitee-status", (data) => {
+    onAcceptInvite({
+      ...data,
+      chatChannelsManager,
+      topic,
+      chatSubscriptionsManager,
+      chatService,
+    });
+  });
+
+  appEvents.on("calendar:create-invitee-status", (data) => {
+    onAcceptInvite({
+      ...data,
+      chatChannelsManager,
+      topic,
+      chatSubscriptionsManager,
+      chatService,
+    });
+  });
+
+  appEvents.on("calendar:invitee-left-event", (data) => {
+    onAcceptInvite({
+      ...data,
+      chatChannelsManager,
+      topic,
+      chatSubscriptionsManager,
+      chatService,
+    });
+  });
 
   api.onPageChange((url) => {
     const allowedPaths = siteSettings.embeddable_chat_allowed_paths.split("|");
 
     // non livestream topics
     if (
-      allowedPaths.every((path) => !url.includes(path) && !url.startsWith(path))
+      allowedPaths.every(
+        (path) => !url.includes(path) && !url.startsWith(path)
+      ) ||
+      !topic?.model?.chat_channel_id
     ) {
       return false;
     }
 
-    if (!topic?.model?.chat_channel_id) {
-      console.log("no channel");
-      resetCustomChatStyles();
-      applicationController.set("showSidebar", false);
-      api.forceSidebarEnabled(false);
-    } else {
-      console.log("channel");
-      applicationController.set("showSidebar", true);
-      api.forceSidebarEnabled(true);
-      // container.lookup("service:header").hamburgerVisible = true;
-      // updateEventStylesByStatus(topic, store, currentUser);
-      // if (!document.body.classList.contains("has-sidebar-page")) {
-      // applicationController.set("showSidebar", true);
-      // applicationController.toggleSidebar();
-
-      // }
-      // Chat scrolls to the bottom of the page when the chat channel is loaded
-      // this is required for the chat message positioning to be correct.
-      // We need to scroll to the top of the page after the chat channel is loaded
-      // to avoid the page being rendered and the viewport being scrolled to the bottom.
-      // This is not an ideal solution, but it's the best we can do for now
-      // later(() => {
-      //   document.documentElement.scrollIntoView({
-      //     behavior: "smooth",
-      //     block: "start",
-      //     inline: "start",
-      //   });
-      // }, 500);
-      setCustomChatStyles();
-    }
+    updateEventStylesByStatus(topic, store, currentUser);
   });
-}
-
-function setCustomChatStyles() {
-  document.documentElement.classList.add("livestream-present");
-  document
-    .querySelector(".topic-navigation")
-    .style.setProperty("display", "none");
-}
-
-function resetCustomChatStyles() {
-  document.documentElement.classList.remove("livestream-present");
-  document
-    .querySelector(".topic-navigation")
-    ?.style?.setProperty("display", "block");
-  document
-    .querySelector(".header-sidebar-toggle")
-    ?.style?.setProperty("display", "none");
 }
 
 async function updateEventStylesByStatus(topic, store, currentUser) {
   let isGoing;
   try {
+    const topicPost = parseInt(
+      document.getElementById("post_1").dataset.postId
+    );
     const attendees = await store.findAll("discourse-post-event-invitee", {
       undefined,
-      post_id: topic.currentPostId,
+      post_id: topicPost,
       type: "going",
     });
     isGoing = attendees.content.some(
@@ -131,7 +126,7 @@ export default {
   name: "discourse-livestream-chat-sidebar",
   initialize(container) {
     withPluginApi("1.8.0", (api) => {
-      // overrideChat(api, container);
+      overrideChat(api, container);
     });
   },
 };
