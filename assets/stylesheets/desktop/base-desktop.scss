@@ -1,0 +1,24 @@
+body.tag-livestream {
+  .discourse-root {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+
+    > :not(.embeddable-chat-channel):not(#main-outlet-wrapper) {
+      flex-basis: 100%;
+    }
+
+    #main-outlet-wrapper {
+      margin-right: 400px;
+    }
+
+    .embeddable-chat-channel {
+      position: fixed;
+      top: var(--header-offset);
+      right: 0;
+      height: calc(100% - var(--header-offset));
+      overflow: hidden;
+      border-left: 2px solid var(--primary-very-low);
+    }
+  }
+}

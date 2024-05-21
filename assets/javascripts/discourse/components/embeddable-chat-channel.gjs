@@ -30,12 +30,8 @@ export default class EmbedableChatChannel extends Component {
 
   constructor() {
     super(...arguments);
-    if (!this.siteSettings.enable_livestream_chat) {
-      return;
-    }
-    this.chatStateManager.prefersDrawer(); // This will avoid opening threads in full page.
     this.appEvents.on("page:changed", this, this.initializeChat);
-    window.addEventListener("resize", this.handleResize);
+    // this.chatStateManager.prefersDrawer(); // This will avoid opening threads in full page.
   }
 
   async findChannel(channelId) {
@@ -54,11 +50,6 @@ export default class EmbedableChatChannel extends Component {
     this.topicChannelId = this.topicModel?.chat_channel_id;
 
     if (this.currentUser && this.topicChannelId) {
-      if (!this.args.inTopic) {
-        const sidebar = document.querySelector(".drop-down-mode.d-header-wrap");
-        const parentElement = document.querySelector("#main");
-        parentElement.prepend(sidebar);
-      }
       return this.findChannel(this.topicChannelId);
     }
 
@@ -75,35 +66,12 @@ export default class EmbedableChatChannel extends Component {
     );
   }
 
-  @action
-  toggleChatCollapse() {
-    this.isChatCollapsed = !this.isChatCollapsed;
-    document.body.classList.toggle("remove-scroll-x");
-    document
-      .querySelector(".embeddable-chat-channel")
-      .classList.toggle("chat-drawer-collapsed");
-
-    later(() => {
-      if (this.isChatCollapsed) {
-        document.querySelector("#custom-chat-container").classList.add("hide");
-      } else {
-        document
-          .querySelector("#custom-chat-container")
-          .classList.remove("hide");
-      }
-      next(this.handleResize);
-    }, 50);
-  }
-
   get shouldRender() {
     if (
       this.loadingChannel ||
       !this.currentUser ||
-      !this.siteSettings.enable_livestream_chat ||
       !this.embeddableChat.activeChannel ||
-      !this.#isUrlAllowedForChat(this.router.currentURL) ||
-      (this.router.currentURL.includes("/conference") &&
-        !this.conference.hasConferenceStarted)
+      !this.#isUrlAllowedForChat(this.router.currentURL)
     ) {
       return false;
     }
@@ -111,58 +79,38 @@ export default class EmbedableChatChannel extends Component {
     return !!this.embeddableChat.activeChannel;
   }
 
-  get isConferencePage() {
-    return Boolean(!this.topicModel) && !this.args.inTopic;
+  setCustomChatStyles(site) {
+    document
+      .querySelector(".topic-navigation")
+      .style.setProperty("display", "none");
+
+    if (!site.mobileView) {
+      document.body.classList.add("custom-chat-enabled");
+    }
+
+    document
+      .querySelector(".sidebar-sections")
+      .style.setProperty("display", "none");
+
+    document
+      .querySelector(".sidebar-footer-wrapper")
+      .style.setProperty("display", "none");
   }
 
-  @action
-  toggleConferenceChannelsList() {
-    this.showConferenceChannelsList = !this.showConferenceChannelsList;
-    if (this.showConferenceChannelsList) {
-      document.addEventListener("click", this.closeListOnOutsideClick, true);
-    } else {
-      document.removeEventListener("click", this.closeListOnOutsideClick, true);
-    }
-    next(this.handleResize);
-  }
+  resetCustomChatStyles() {
+    document
+      .querySelector(".topic-navigation")
+      .style.setProperty("display", "block");
 
-  @action
-  closeListOnOutsideClick(event) {
-    const conferenceChannelList = document.querySelector(
-      ".conference-channels-list"
-    );
-    if (
-      conferenceChannelList &&
-      !conferenceChannelList.contains(event.target)
-    ) {
-      this.toggleConferenceChannelsList();
-    }
-  }
+    document.body.classList.remove("custom-chat-enabled");
 
-  @action
-  handleResize() {
-    // don't resize the chat if we are in a topic
-    if (this.args.inTopic) {
-      return;
-    }
+    document
+      .querySelector(".sidebar-sections")
+      .style.setProperty("display", "block");
 
-    const chatDrawerElement = document.querySelector("#custom-chat-container");
-
-    if (!chatDrawerElement) {
-      return;
-    }
-
-    let headerHeight = document.querySelector("header.d-header").offsetHeight;
-    let offset = headerHeight + 5;
-
-    const height = window.innerHeight - offset;
-
-    chatDrawerElement.style.setProperty(
-      "max-height",
-      `${height}px`,
-      "important"
-    );
-    chatDrawerElement.style.setProperty("height", `${height}px`, "important");
+    document
+      .querySelector(".sidebar-footer-wrapper")
+      .style.setProperty("display", "block");
   }
 
   willDestroy() {
@@ -172,42 +120,11 @@ export default class EmbedableChatChannel extends Component {
 
   <template>
     {{#if this.shouldRender}}
-      {{#if this.isConferencePage}}
-        <DButton
-          @icon={{if
-            this.isChatCollapsed
-            "angle-double-left"
-            "angle-double-right"
-          }}
-          @action={{this.toggleChatCollapse}}
-          class="chat-collapsible-toggle-button"
-        />
-        <div class="chat-drawer-header" id="conference-chat-switcher">
-          {{#if this.showConferenceChannelsList}}
-            <DButton
-              @icon="bars"
-              @action={{this.toggleConferenceChannelsList}}
-              @translatedLabel={{this.embeddableChat.activeChannel.title}}
-              class="chat-drawer-header-button"
-            />
-            <ConferenceChannelList
-              @afterChannelUpdate={{this.toggleConferenceChannelsList}}
-            />
-          {{else}}
-            <DButton
-              @icon="bars"
-              @action={{this.toggleConferenceChannelsList}}
-              @translatedLabel={{this.embeddableChat.activeChannel.title}}
-              class="chat-drawer-header-button"
-            />
-          {{/if}}
-        </div>
-      {{/if}}
       <div
         id="custom-chat-container"
-        class="chat-drawer chat-drawer-active"
-        {{didInsert this.handleResize}}
-        {{didUpdate this.handleResize}}
+        class="chat-drawer"
+        {{! we have to override the \`!important\` chat styles  }}
+        style="height: 100% !important;"
       >
         <ChatChannel @channel={{this.embeddableChat.activeChannel}} />
       </div>

@@ -1,5 +1,6 @@
 import { later } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
+import { schedule } from "@ember/runloop";
 
 function showCustomBBCode(isGoing = false) {
   document.querySelectorAll(".cooked .preview").forEach(function (element) {
@@ -41,104 +42,71 @@ async function onAcceptInvite({ status, chatChannelsManager, topic }) {
 
 function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
-  const site = container.lookup("service:site");
-  if (!siteSettings.enable_livestream_chat) {
-    return;
-  }
-  const chatService = container.lookup("service:chat");
-  const chatSubscriptionsManager = container.lookup(
-    "service:chatSubscriptionsManager"
-  );
-  const store = container.lookup("service:store");
-  const chatChannelsManager = container.lookup("service:chat-channels-manager");
-  const appEvents = container.lookup("service:appEvents");
-  let topic = container.lookup("controller:topic");
-  const currentUser = api.getCurrentUser();
+  const currentUser = container.lookup("service:current-user");
   const applicationController = container.lookup("controller:application");
-
-  if (!currentUser || !chatService.userCanChat) {
-    return;
-  }
-
-  appEvents.on("calendar:update-invitee-status", (data) => {
-    onAcceptInvite({
-      ...data,
-      appEvents,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
-    });
-  });
-
-  appEvents.on("calendar:create-invitee-status", (data) => {
-    onAcceptInvite({
-      ...data,
-      appEvents,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
-    });
-  });
-
-  appEvents.on("calendar:invitee-left-event", (data) => {
-    onAcceptInvite({
-      ...data,
-      appEvents,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
-    });
-  });
+  const topic = container.lookup("controller:topic");
 
   api.onPageChange((url) => {
     const allowedPaths = siteSettings.embeddable_chat_allowed_paths.split("|");
 
+    // non livestream topics
     if (
       allowedPaths.every((path) => !url.includes(path) && !url.startsWith(path))
     ) {
-      document.body.classList.remove("custom-chat-enabled");
-      appEvents.trigger("chat:toggle-close");
-      return;
+      return false;
     }
 
     if (!topic?.model?.chat_channel_id) {
-      // don't show the chat if there is no chat channel
-      document
-        .querySelector(".embeddable-chat-channel")
-        .style.setProperty("display", "none", "important");
-      document.body.classList.remove("custom-chat-enabled");
-      appEvents.trigger("chat:toggle-close");
+      console.log("no channel");
+      resetCustomChatStyles();
+      applicationController.set("showSidebar", false);
+      api.forceSidebarEnabled(false);
     } else {
-      updateTopicStylesWithChatChannel(topic, store, currentUser, site);
-      if (document.body.classList.contains("has-sidebar-page")) {
-        applicationController.toggleSidebar();
-      }
+      console.log("channel");
+      applicationController.set("showSidebar", true);
+      api.forceSidebarEnabled(true);
+      // container.lookup("service:header").hamburgerVisible = true;
+      // updateEventStylesByStatus(topic, store, currentUser);
+      // if (!document.body.classList.contains("has-sidebar-page")) {
+      // applicationController.set("showSidebar", true);
+      // applicationController.toggleSidebar();
 
+      // }
       // Chat scrolls to the bottom of the page when the chat channel is loaded
       // this is required for the chat message positioning to be correct.
       // We need to scroll to the top of the page after the chat channel is loaded
       // to avoid the page being rendered and the viewport being scrolled to the bottom.
       // This is not an ideal solution, but it's the best we can do for now
-      later(() => {
-        document.documentElement.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-          inline: "start",
-        });
-      }, 500);
+      // later(() => {
+      //   document.documentElement.scrollIntoView({
+      //     behavior: "smooth",
+      //     block: "start",
+      //     inline: "start",
+      //   });
+      // }, 500);
+      setCustomChatStyles();
     }
   });
 }
 
-async function updateTopicStylesWithChatChannel(
-  topic,
-  store,
-  currentUser,
-  site
-) {
+function setCustomChatStyles() {
+  document.documentElement.classList.add("livestream-present");
+  document
+    .querySelector(".topic-navigation")
+    .style.setProperty("display", "none");
+}
+
+function resetCustomChatStyles() {
+  document.documentElement.classList.remove("livestream-present");
+  document
+    .querySelector(".topic-navigation")
+    ?.style?.setProperty("display", "block");
+  document
+    .querySelector(".header-sidebar-toggle")
+    ?.style?.setProperty("display", "none");
+}
+
+async function updateEventStylesByStatus(topic, store, currentUser) {
   let isGoing;
   try {
     const attendees = await store.findAll("discourse-post-event-invitee", {
@@ -146,24 +114,16 @@ async function updateTopicStylesWithChatChannel(
       post_id: topic.currentPostId,
       type: "going",
     });
-
     isGoing = attendees.content.some(
       (attendee) => attendee.user.id === currentUser.id
     );
     showCustomBBCode(isGoing);
-
-    if (!site.mobileView) {
-      document.body.classList.add("custom-chat-enabled");
-    }
   } finally {
     if (!isGoing) {
       document.body.classList.remove("confirmed-event-assistance");
     } else {
       document.body.classList.add("confirmed-event-assistance");
     }
-    document
-      .querySelector(".embeddable-chat-channel")
-      .style.setProperty("display", "block", "important");
   }
 }
 
@@ -171,7 +131,7 @@ export default {
   name: "discourse-livestream-chat-sidebar",
   initialize(container) {
     withPluginApi("1.8.0", (api) => {
-      overrideChat(api, container);
+      // overrideChat(api, container);
     });
   },
 };

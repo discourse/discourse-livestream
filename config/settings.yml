@@ -81,9 +81,6 @@ plugins:
   conference_start_timezone:
     default: "America/Chicago"
     client: true
-  enable_livestream_chat:
-    default: false
-    client: true
   conference_chat_channel_ids:
     type: list
     default: ""
