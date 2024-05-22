@@ -1,7 +1,6 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { inject as controller } from "@ember/controller";
-import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
 
