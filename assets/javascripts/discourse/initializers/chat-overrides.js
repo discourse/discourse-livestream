@@ -1,83 +1,57 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 function showCustomBBCode(isGoing = false) {
-  const displayStyle = !isGoing ? "block" : "none";
-  const hiddenStyle = isGoing ? "block" : "none";
-
+  // show the content within the [preview] tag if the user is not going to the event
   document.querySelectorAll(".cooked .preview").forEach((e) => {
-    e.style.setProperty("display", displayStyle, "important");
+    e.style.setProperty("display", !isGoing ? "block" : "none", "important");
   });
 
+  // show the content within the [hidden] tag if the user is going to the event
   document.querySelectorAll(".cooked .hidden").forEach((e) => {
-    e.style.setProperty("display", hiddenStyle, "important");
+    e.style.setProperty("display", isGoing ? "block" : "none", "important");
   });
 }
 
 async function onAcceptInvite({ status, chatChannelsManager, topic }) {
   if (status === "going") {
     showCustomBBCode(true);
-
     const channel = await chatChannelsManager.find(topic.model.chat_channel_id);
     chatChannelsManager.follow(channel);
-    document.querySelector(".chat-drawer").classList.remove("unconfirmed");
     document.body.classList.add("confirmed-event-assistance");
-    return;
-  }
-
-  if (status !== "going") {
+  } else if (status !== "going") {
     showCustomBBCode(false);
-
     const channel = await chatChannelsManager.find(topic.model.chat_channel_id);
     chatChannelsManager.unfollow(channel);
-    document.querySelector(".chat-drawer").classList.add("unconfirmed");
     document.body.classList.remove("confirmed-event-assistance");
   }
 }
 
 function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
-  const applicationController = container.lookup("controller:application");
   const currentUser = container.lookup("service:current-user");
   const store = container.lookup("service:store");
   const topic = container.lookup("controller:topic");
   const chatChannelsManager = container.lookup("service:chat-channels-manager");
   const chatService = container.lookup("service:chat");
-  const chatSubscriptionsManager = container.lookup(
-    "service:chatSubscriptionsManager"
-  );
   const appEvents = container.lookup("service:appEvents");
 
-  if (!currentUser || !chatService.userCanChat) {
+  if (!currentUser || !siteSettings.chat_enabled || !chatService.userCanChat) {
     return;
   }
 
-  appEvents.on("calendar:update-invitee-status", (data) => {
-    onAcceptInvite({
-      ...data,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
-    });
-  });
+  const events = [
+    "calendar:update-invitee-status",
+    "calendar:create-invitee-status",
+    "calendar:invitee-left-event",
+  ];
 
-  appEvents.on("calendar:create-invitee-status", (data) => {
-    onAcceptInvite({
-      ...data,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
-    });
-  });
-
-  appEvents.on("calendar:invitee-left-event", (data) => {
-    onAcceptInvite({
-      ...data,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
+  events.forEach((event) => {
+    appEvents.on(event, (data) => {
+      onAcceptInvite({
+        ...data,
+        chatChannelsManager,
+        topic,
+      });
     });
   });
 
@@ -102,7 +76,8 @@ async function updateEventStylesByStatus(topic, store, currentUser) {
   let isGoing;
   try {
     const topicPost = parseInt(
-      document.getElementById("post_1").dataset.postId
+      document.getElementById("post_1").dataset.postId,
+      10
     );
     const attendees = await store.findAll("discourse-post-event-invitee", {
       undefined,
@@ -113,6 +88,8 @@ async function updateEventStylesByStatus(topic, store, currentUser) {
       (attendee) => attendee.user.id === currentUser.id
     );
     showCustomBBCode(isGoing);
+  } catch {
+    // no event found
   } finally {
     if (!isGoing) {
       document.body.classList.remove("confirmed-event-assistance");

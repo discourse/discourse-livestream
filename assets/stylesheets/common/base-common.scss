@@ -1,4 +1,4 @@
-body.tag-livestream.confirmed-event-assistance {
+body.chat-enabled.tag-livestream.confirmed-event-assistance {
   iframe[allowfullscreen] {
     width: 100%;
     height: calc(90vh - 10rem);
@@ -23,7 +23,7 @@ body.tag-livestream.confirmed-event-assistance {
   }
 }
 
-body.tag-livestream .chat-channel-preview-card {
+body.chat-enabled.tag-livestream .chat-channel-preview-card {
   .chat-channel-preview-card__browse-all {
     display: none;
   }

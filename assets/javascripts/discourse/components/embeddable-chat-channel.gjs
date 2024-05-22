@@ -14,7 +14,6 @@ export default class EmbedableChatChannel extends Component {
   @service router;
   @controller("topic") topicController;
 
-  @tracked showConferenceChannelsList = false;
   @tracked topicModel = null;
   @tracked topicChannelId = null;
   @tracked isChatCollapsed = false;
@@ -76,7 +75,7 @@ export default class EmbedableChatChannel extends Component {
         id="custom-chat-container"
         class="chat-drawer"
         {{! We need to override core's '!important' chat-drawer height}}
-        style="height: 100% !important"
+        style="height: calc(var(--composer-vh, var(--1dvh))* 100 - var(--header-offset, 0px)) !important;"
       >
         <ChatChannel @channel={{this.embeddableChat.activeChannel}} />
       </div>

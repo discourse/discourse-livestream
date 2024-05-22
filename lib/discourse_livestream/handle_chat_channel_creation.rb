@@ -21,7 +21,7 @@ module DiscourseLivestream
             topic: topic,
           )
 
-        channel.user_chat_channel_memberships.create!(user: topic.user, following: true)
+        channel.user_chat_channel_memberships.create!(user: topic.user, following: false)
       end
     end
   end

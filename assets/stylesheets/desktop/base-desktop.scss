@@ -1,4 +1,4 @@
-body.tag-livestream {
+body.tag-livestream.chat-enabled {
   // we need to fullscreen the header icons to match the chat panel
   // being on the right side of the screen
   .d-header-wrap .wrap {
@@ -6,26 +6,23 @@ body.tag-livestream {
     max-width: 100%;
   }
 
-  .discourse-root {
+  #main-outlet-wrapper {
+    grid-template-areas:
+      "sidebar content livestream"
+      "sidebar below-content livestream";
+    margin: 0;
+    max-width: 100%;
+  }
+
+  #custom-chat-container {
+    grid-area: livestream;
+    border-left: 2px solid var(--primary-very-low);
     display: flex;
-    flex-wrap: wrap;
-    flex-direction: row-reverse;
-
-    > :not(.embeddable-chat-channel):not(#main-outlet-wrapper) {
-      flex-basis: 100%;
-    }
-
-    #main-outlet-wrapper {
-      margin-right: 410px;
-    }
-
-    .embeddable-chat-channel {
-      position: fixed;
-      top: var(--header-offset);
-      right: 0;
-      height: calc(100% - var(--header-offset));
-      overflow-y: scroll;
-      border-left: 2px solid var(--primary-very-low);
-    }
+    position: sticky;
+    top: var(--header-offset);
+    background: var(--d-sidebar-background);
+    --1dvh: 1vh;
+    align-self: start;
+    overflow-y: auto;
   }
 }

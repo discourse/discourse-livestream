@@ -1,13 +1,7 @@
 en:
   js:
-    admin:
-      web_hooks:
-        user_event:
-          register_dev_days_conference: User registered on the Dev Days Conference
-        voting_event:
-          submit_survey_response: User submitted a livestream survey response
     discourse_livestream:
       chat:
         going: "Click Going"
         join_channel_header: "🌟 Join the Buzz! 🌟"
-        join_channel_message: "to confirm your attendance and unlock our event chat. Dive into discussions, share your excitement, and connect with fellow attendees!"
+        join_channel_message: "Confirm your attendance and unlock our event chat. Dive into discussions, share your excitement, and connect with fellow attendees!"
