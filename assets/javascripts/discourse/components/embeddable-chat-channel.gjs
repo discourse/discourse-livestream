@@ -1,14 +1,13 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { inject as controller } from "@ember/controller";
-import { inject as service } from "@ember/service";
-import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
-import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
-import and from "truth-helpers/helpers/and";
 import { fn } from "@ember/helper";
-import not from "truth-helpers/helpers/not";
 import { action } from "@ember/object";
+import didInsert from "@ember/render-modifiers/modifiers/did-insert";
+import { inject as service } from "@ember/service";
+import and from "truth-helpers/helpers/and";
+import not from "truth-helpers/helpers/not";
+import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
 
 export default class EmbedableChatChannel extends Component {
   @service chatChannelsManager;
@@ -16,7 +15,6 @@ export default class EmbedableChatChannel extends Component {
   @service embeddableChat;
   @service appEvents;
   @service site;
-  @service chatChannelsManager;
   @controller("topic") topicController;
 
   @tracked topicModel = null;

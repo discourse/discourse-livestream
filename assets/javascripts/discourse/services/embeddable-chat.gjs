@@ -1,5 +1,5 @@
-import Chat from "discourse/plugins/chat/discourse/services/chat";
 import { inject as service } from "@ember/service";
+import Chat from "discourse/plugins/chat/discourse/services/chat";
 
 export default class EmbeddableChat extends Chat {
   @service siteSettings;

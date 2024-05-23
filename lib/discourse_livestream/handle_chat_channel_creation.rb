@@ -8,8 +8,7 @@ module DiscourseLivestream
              chatable_id: topic.category.id,
              chatable_type: "Category",
            )
-      if topic.category.present? &&
-           topic.tags.any? { |tag| tag.name == "livestream" }
+      if topic.category.present? && topic.tags.any? { |tag| tag.name == "livestream" }
         channel =
           Chat::Channel.create!(
             chatable_id: topic.category.id,
