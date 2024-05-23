@@ -7,7 +7,7 @@
 # url: https://github.com/discourse/discourse-livestream
 # required_version: 2.7.0
 
-enabled_site_setting :enable_discourse_livestream
+enabled_site_setting :discourse_livestream_enabled
 
 register_asset "stylesheets/common/base-common.scss"
 register_asset "stylesheets/desktop/base-desktop.scss", :desktop

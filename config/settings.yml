@@ -1,5 +1,5 @@
 plugins:
-  enable_discourse_livestream:
+  discourse_livestream_enabled:
     default: false
     client: true
   embeddable_chat_allowed_paths:
