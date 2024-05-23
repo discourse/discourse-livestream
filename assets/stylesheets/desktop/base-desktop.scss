@@ -15,6 +15,9 @@ body.tag-livestream.chat-enabled {
   }
 
   #custom-chat-container {
+    height: calc(
+      var(--composer-vh, var(--1dvh)) * 100 - var(--header-offset, 0px)
+    ) !important;
     grid-area: livestream;
     border-left: 2px solid var(--primary-very-low);
     display: flex;

@@ -3,26 +3,27 @@ import { tracked } from "@glimmer/tracking";
 import { inject as controller } from "@ember/controller";
 import { inject as service } from "@ember/service";
 import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
+import didInsert from "@ember/render-modifiers/modifiers/did-insert";
+import didUpdate from "@ember/render-modifiers/modifiers/did-update";
+import and from "truth-helpers/helpers/and";
+import { fn } from "@ember/helper";
+import not from "truth-helpers/helpers/not";
+import { action } from "@ember/object";
 
 export default class EmbedableChatChannel extends Component {
   @service chatChannelsManager;
   @service currentUser;
   @service embeddableChat;
   @service appEvents;
-  @service siteSettings;
-  @service router;
+  @service site;
+  @service chatChannelsManager;
   @controller("topic") topicController;
 
   @tracked topicModel = null;
   @tracked topicChannelId = null;
-  @tracked isChatCollapsed = false;
   @tracked loadingChannel = false;
 
-  constructor() {
-    super(...arguments);
-    this.appEvents.on("page:changed", this, this.initializeChat);
-  }
-
+  @action
   async findChannel(channelId) {
     try {
       this.loadingChannel = true;
@@ -34,50 +35,20 @@ export default class EmbedableChatChannel extends Component {
     }
   }
 
-  initializeChat() {
-    this.topicModel = this.topicController?.model;
-    this.topicChannelId = this.topicModel?.chat_channel_id;
-
-    if (this.currentUser && this.topicChannelId) {
-      return this.findChannel(this.topicChannelId);
-    }
-
-    if (!this.shouldRender) {
-      this.embeddableChat.activeChannel = null;
-    }
-  }
-
-  #isUrlAllowedForChat(url) {
-    const allowedPaths =
-      this.siteSettings.embeddable_chat_allowed_paths.split("|");
-    return allowedPaths.some(
-      (path) => url.includes(path) || url.startsWith(path)
-    );
-  }
-
-  get shouldRender() {
-    if (
-      this.loadingChannel ||
-      !this.currentUser ||
-      !this.embeddableChat.activeChannel ||
-      !this.#isUrlAllowedForChat(this.router.currentURL)
-    ) {
-      return false;
-    }
-
-    return !!this.embeddableChat.activeChannel;
+  willDestroy() {
+    super.willDestroy(...arguments);
+    this.embeddableChat.activeChannel = null;
   }
 
   <template>
-    {{#if this.shouldRender}}
-      <div
-        id="custom-chat-container"
-        class="chat-drawer"
-        {{! We need to override core's '!important' chat-drawer height}}
-        style="height: calc(var(--composer-vh, var(--1dvh))* 100 - var(--header-offset, 0px)) !important;"
-      >
+    <div
+      id="custom-chat-container"
+      class="chat-drawer"
+      {{didInsert (fn this.findChannel @chatChannelId)}}
+    >
+      {{#if (and this.embeddableChat.activeChannel (not this.loadingChannel))}}
         <ChatChannel @channel={{this.embeddableChat.activeChannel}} />
-      </div>
-    {{/if}}
+      {{/if}}
+    </div>
   </template>
 }

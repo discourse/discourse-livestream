@@ -1,4 +1,5 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
+import MobileLivestreamChatIcon from "../components/mobile-livestream-chat-icon";
 
 function showCustomBBCode(isGoing = false) {
   // show the content within the [preview] tag if the user is not going to the event
@@ -34,6 +35,7 @@ function overrideChat(api, container) {
   const chatChannelsManager = container.lookup("service:chat-channels-manager");
   const chatService = container.lookup("service:chat");
   const appEvents = container.lookup("service:appEvents");
+  const site = container.lookup("site:main");
 
   if (!currentUser || !siteSettings.chat_enabled || !chatService.userCanChat) {
     return;
@@ -54,6 +56,10 @@ function overrideChat(api, container) {
       });
     });
   });
+
+  if (site.mobileView) {
+    api.headerIcons.add("livestream", MobileLivestreamChatIcon);
+  }
 
   api.onPageChange((url) => {
     const allowedPaths = siteSettings.embeddable_chat_allowed_paths.split("|");
