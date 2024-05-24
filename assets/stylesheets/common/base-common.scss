@@ -4,8 +4,13 @@ body.chat-enabled.tag-livestream.confirmed-event-assistance {
     height: calc(90vh - 10rem);
   }
 
-  #post_1 .topic-avatar {
-    display: none;
+  #post_1 {
+    .topic-avatar {
+      display: none;
+    }
+    .topic-meta-data {
+      margin: 0;
+    }
   }
 
   .topic-navigation {

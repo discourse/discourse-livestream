@@ -15,6 +15,7 @@ export default class EmbedableChatChannel extends Component {
   @service embeddableChat;
   @service appEvents;
   @service site;
+  @service chatDraftsManager;
   @controller("topic") topicController;
 
   @tracked topicModel = null;
@@ -35,6 +36,7 @@ export default class EmbedableChatChannel extends Component {
 
   willDestroy() {
     super.willDestroy(...arguments);
+    this.chatDraftsManager.reset();
     this.embeddableChat.activeChannel = null;
   }
 
