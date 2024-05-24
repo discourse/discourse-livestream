@@ -13,7 +13,7 @@ describe "Discourse Livestream - Topic Livestream - Desktop - Authenticated", ty
     sign_in(current_user)
   end
 
-  context "topic view" do
+  context "when in a topic view" do
     it "creates a chat channel for livestream topics" do
       topic_livestream.create_livestream_topic(composer, topic_page, livestream_tag)
 

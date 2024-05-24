@@ -15,7 +15,7 @@ describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated",
     sign_in(current_user)
   end
 
-  context "topic view" do
+  context "when in a topic view" do
     it "does not display livestream chat icon on regular topics" do
       topic_livestream.create_regular_topic(composer, topic_page)
 
