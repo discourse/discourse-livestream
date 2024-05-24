@@ -2,7 +2,7 @@
 
 describe "Discourse Livestream - Topic Livestream - Desktop - Authenticated", type: :system do
   fab!(:current_user) { Fabricate(:user, refresh_auto_groups: true) }
-  fab!(:category) 
+  fab!(:category)
   fab!(:livestream_tag) { Fabricate(:tag, name: "livestream") }
   let(:topic_page) { PageObjects::Pages::Topic.new }
   let(:composer) { PageObjects::Components::Composer.new }
@@ -28,5 +28,3 @@ describe "Discourse Livestream - Topic Livestream - Desktop - Authenticated", ty
     end
   end
 end
-
-

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated", type: :system, mobile: true do
+describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated",
+         type: :system,
+         mobile: true do
   fab!(:current_user) { Fabricate(:user, refresh_auto_groups: true) }
   fab!(:livestream_tag) { Fabricate(:tag, name: "livestream") }
-  fab!(:category) 
+  fab!(:category)
   let(:topic_page) { PageObjects::Pages::Topic.new }
   let(:composer) { PageObjects::Components::Composer.new }
   let(:topic_livestream) { PageObjects::Pages::TopicLivestream.new }
