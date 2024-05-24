@@ -7,6 +7,7 @@ describe DiscourseLivestream::ConferencesController do
   fab!(:group)
 
   before do
+    SiteSetting.enable_discourse_livestream = true
     SiteSetting.conference_category_id = category.id
     SiteSetting.conference_group_name = group.name
     DiscourseLivestream::Conference.create!(category: category)

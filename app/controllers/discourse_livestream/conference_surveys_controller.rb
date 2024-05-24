@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module ::DiscourseLivestream
   class ConferenceSurveysController < ::ApplicationController
+    requires_plugin PLUGIN_NAME
+
     before_action :find_session, only: [:create]
     before_action :find_survey, only: [:submit_response]
     before_action :ensure_logged_in

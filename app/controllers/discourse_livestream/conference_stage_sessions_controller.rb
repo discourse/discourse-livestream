@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module ::DiscourseLivestream
   class ConferenceStageSessionsController < ::ApplicationController
+    requires_plugin PLUGIN_NAME
+
     before_action :ensure_logged_in
     before_action :set_stream_and_stage, only: %i[create index]
     before_action :ensure_admin, only: [:create]
