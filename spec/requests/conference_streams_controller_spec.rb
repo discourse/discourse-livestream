@@ -19,6 +19,8 @@ RSpec.describe DiscourseLivestream::ConferenceStreamsController do
     }
   end
 
+  before { SiteSetting.enable_discourse_livestream = true }
+
   describe "#show" do
     fab!(:conference_stream) { Fabricate(:conference_stream, conference: conference) }
 

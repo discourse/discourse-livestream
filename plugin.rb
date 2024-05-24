@@ -11,47 +11,9 @@ enabled_site_setting :enable_discourse_livestream
 
 register_asset "stylesheets/common/discourse-livestream.scss"
 
-PLUGIN_NAME ||= "discourse-livestream".freeze
-
 after_initialize do
-  class ::WebHookEventType
-    REGISTER_DEV_DAYS_CONFERENCE = 5348.freeze
-    SUBMIT_SURVEY_RESPONSE = 8438.freeze
-  end
-
-  SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-livestream", "db", "fixtures").to_s
-
-  ::ActionController::Base.prepend_view_path File.expand_path("../app/views/", __FILE__)
-
-  %w[
-    ../app/controllers/discourse_livestream/conferences_controller
-    ../app/controllers/discourse_livestream/conference_streams_controller
-    ../app/controllers/discourse_livestream/conference_stage_sessions_controller
-    ../app/controllers/discourse_livestream/conference_surveys_controller
-    ../app/models/discourse_livestream/conference
-    ../app/models/discourse_livestream/conference_attendee
-    ../app/models/discourse_livestream/conference_stream
-    ../app/models/discourse_livestream/conference_stage
-    ../app/models/discourse_livestream/conference_survey
-    ../app/models/discourse_livestream/conference_survey_response
-    ../app/models/discourse_livestream/conference_stage_session
-    ../app/serializers/discourse_livestream/conference_attendances_serializer
-    ../app/serializers/discourse_livestream/conference_speaker_serializer
-    ../app/serializers/discourse_livestream/conference_stage_session_serializer
-    ../app/serializers/discourse_livestream/conference_stages_serializer
-    ../app/serializers/discourse_livestream/conference_stream_serializer
-    ../app/serializers/discourse_livestream/group_user_serializer
-    ../app/serializers/discourse_livestream/conference_survey_response_serializer
-    ../app/serializers/discourse_livestream/conference_survey_serializer
-    ../app/models/discourse_livestream/conference_user_stage_session
-    ../lib/discourse_livestream/chat_channel_extension
-    ../lib/discourse_livestream/topic_extension
-    ../lib/discourse_livestream/handle_chat_channel_creation
-    ../lib/discourse_livestream/user_extension
-    ../lib/discourse_livestream/category_extension
-  ].each { |path| require File.expand_path(path, __FILE__) }
-
   module ::DiscourseLivestream
+    PLUGIN_NAME = "discourse-livestream"
     USER_CUSTOM_FIELD_NAME = "dont_send_accepted_solution_notifications"
 
     class Engine < ::Rails::Engine
@@ -59,6 +21,39 @@ after_initialize do
       isolate_namespace DiscourseLivestream
     end
   end
+
+  WebHookEventType.const_set(:REGISTER_DEV_DAYS_CONFERENCE, 5348)
+  WebHookEventType.const_set(:SUBMIT_SURVEY_RESPONSE, 8438)
+
+  SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-livestream", "db", "fixtures").to_s
+
+  ::ActionController::Base.prepend_view_path File.expand_path("../app/views/", __FILE__)
+
+  require_relative "app/controllers/discourse_livestream/conferences_controller"
+  require_relative "app/controllers/discourse_livestream/conference_streams_controller"
+  require_relative "app/controllers/discourse_livestream/conference_stage_sessions_controller"
+  require_relative "app/controllers/discourse_livestream/conference_surveys_controller"
+  require_relative "app/models/discourse_livestream/conference"
+  require_relative "app/models/discourse_livestream/conference_attendee"
+  require_relative "app/models/discourse_livestream/conference_stream"
+  require_relative "app/models/discourse_livestream/conference_stage"
+  require_relative "app/models/discourse_livestream/conference_survey"
+  require_relative "app/models/discourse_livestream/conference_survey_response"
+  require_relative "app/models/discourse_livestream/conference_stage_session"
+  require_relative "app/serializers/discourse_livestream/conference_attendances_serializer"
+  require_relative "app/serializers/discourse_livestream/conference_speaker_serializer"
+  require_relative "app/serializers/discourse_livestream/conference_stage_session_serializer"
+  require_relative "app/serializers/discourse_livestream/conference_stages_serializer"
+  require_relative "app/serializers/discourse_livestream/conference_stream_serializer"
+  require_relative "app/serializers/discourse_livestream/group_user_serializer"
+  require_relative "app/serializers/discourse_livestream/conference_survey_response_serializer"
+  require_relative "app/serializers/discourse_livestream/conference_survey_serializer"
+  require_relative "app/models/discourse_livestream/conference_user_stage_session"
+  require_relative "lib/discourse_livestream/chat_channel_extension"
+  require_relative "lib/discourse_livestream/topic_extension"
+  require_relative "lib/discourse_livestream/handle_chat_channel_creation"
+  require_relative "lib/discourse_livestream/user_extension"
+  require_relative "lib/discourse_livestream/category_extension"
 
   ::DiscourseLivestream::Engine.routes.draw do
     get "/conference" => "conferences#index"
@@ -90,13 +85,9 @@ after_initialize do
 
     add_to_serializer(:topic_view, :chat_channel_id) { object.topic&.chat_channel&.id }
 
-    DiscourseEvent.on(:post_edited) do |post, _, _|
-      DiscourseLivestream.handle_chat_channel_creation(post.topic)
-    end
+    on(:post_edited) { |post, _, _| DiscourseLivestream.handle_chat_channel_creation(post.topic) }
 
-    DiscourseEvent.on(:topic_created) do |topic, _, _|
-      DiscourseLivestream.handle_chat_channel_creation(topic)
-    end
+    on(:topic_created) { |topic, _, _| DiscourseLivestream.handle_chat_channel_creation(topic) }
 
     add_to_serializer(:site_category, :chat_channel_id) { object&.chat_channel&.chatable_id }
   end

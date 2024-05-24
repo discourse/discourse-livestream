@@ -25,7 +25,10 @@ RSpec.describe DiscourseLivestream::ConferenceStageSessionsController do
 
   let(:sessions_url) { "/conference/streams/#{stream.id}/stages/#{stage.id}/stage_sessions.json" }
 
-  before { sign_in(admin) }
+  before do
+    SiteSetting.enable_discourse_livestream = true
+    sign_in(admin)
+  end
 
   describe "#create" do
     context "when logged in as admin" do

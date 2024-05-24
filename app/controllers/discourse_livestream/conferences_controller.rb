@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module ::DiscourseLivestream
   class ConferencesController < ::ApplicationController
+    requires_plugin PLUGIN_NAME
+
     before_action :ensure_logged_in, only: [:register]
     before_action :set_conference_group, only: [:register]
     before_action :set_conference, only: [:register]

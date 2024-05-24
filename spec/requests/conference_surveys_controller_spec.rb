@@ -27,6 +27,8 @@ RSpec.describe DiscourseLivestream::ConferenceSurveysController do
     { survey_response: { score: 5, comment: "Great session!" }, survey_id: survey.id }
   end
 
+  before { SiteSetting.enable_discourse_livestream = true }
+
   describe "#create" do
     context "when logged in as admin" do
       before { sign_in(admin) }
