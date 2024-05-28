@@ -6,7 +6,7 @@ task "add_chat_to_existing_topics" => :environment do
     .includes(:user, :category, :tags)
     .where(category: { slug: "events" }, tags: { name: SiteSetting.topic_livestream_tag })
     .find_each(batch_size: 100) do |topic|
-      next unless topic.category.present?
+      next if topic.category.blank?
       next unless topic.tags.any? { |tag| tag.name == SiteSetting.topic_livestream_tag }
       if Chat::Channel.exists?(
            topic_id: topic.id,

@@ -2,7 +2,7 @@
 module DiscourseLivestream
   def self.handle_chat_channel_creation(topic)
     return unless SiteSetting.enable_livestream_chat
-    return unless topic.category.present?
+    return if topic.category.blank?
     unless Chat::Channel.exists?(
              topic_id: topic.id,
              chatable_id: topic.category.id,

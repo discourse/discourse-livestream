@@ -31,7 +31,7 @@ module ::DiscourseLivestream
     def set_stream
       @stream = ConferenceStream.find(params[:stream_id])
       @conference_group = Group.find_by_name(SiteSetting.conference_group_name)
-      raise Discourse::InvalidAccess.new unless @stream.present?
+      raise Discourse::InvalidAccess.new if @stream.blank?
     end
 
     def stream_params
