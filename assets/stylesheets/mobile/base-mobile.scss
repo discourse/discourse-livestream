@@ -1,0 +1,57 @@
+body.tag-livestream.chat-enabled {
+  .d-header-icons {
+    .livestream-header-icon {
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 0, 0, 0.874);
+        animation: pulse-circle 3s infinite;
+      }
+
+      @keyframes pulse-circle {
+        0% {
+          transform: scale(1);
+          background-color: rgba(255, 0, 0, 0.6);
+        }
+        50% {
+          transform: scale(1.5);
+          background-color: rgba(255, 0, 0, 0.3);
+        }
+        100% {
+          transform: scale(1);
+          background-color: rgba(255, 0, 0, 0.6);
+        }
+      }
+    }
+
+    // hide the default chat icon in favor of the livestream icon
+    .chat-header-icon {
+      display: none;
+    }
+  }
+
+  .livestream-chat-modal {
+    .d-modal__body {
+      padding: 1em 0.4em 1em 0.4em;
+    }
+    #custom-chat-container {
+      width: 100%;
+      height: 400px !important;
+
+      .chat-channel-preview-card p {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+body:not(.tag-livestream) .d-header-icons .livestream-header-icon {
+  display: none;
+}

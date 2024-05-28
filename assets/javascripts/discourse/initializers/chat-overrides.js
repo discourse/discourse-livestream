@@ -1,169 +1,107 @@
-import { later } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
+import MobileLivestreamChatIcon from "../components/mobile-livestream-chat-icon";
 
 function showCustomBBCode(isGoing = false) {
-  document.querySelectorAll(".cooked .preview").forEach(function (element) {
-    element.style.setProperty(
-      "display",
-      !isGoing ? "block" : "none",
-      "important"
-    );
+  // show the content within the [preview] tag if the user is not going to the event
+  document.querySelectorAll(".cooked .preview").forEach((e) => {
+    e.style.setProperty("display", !isGoing ? "block" : "none", "important");
   });
 
-  document.querySelectorAll(".cooked .hidden").forEach(function (element) {
-    element.style.setProperty(
-      "display",
-      isGoing ? "block" : "none",
-      "important"
-    );
+  // show the content within the [hidden] tag if the user is going to the event
+  document.querySelectorAll(".cooked .hidden").forEach((e) => {
+    e.style.setProperty("display", isGoing ? "block" : "none", "important");
   });
 }
 
 async function onAcceptInvite({ status, chatChannelsManager, topic }) {
   if (status === "going") {
     showCustomBBCode(true);
-
     const channel = await chatChannelsManager.find(topic.model.chat_channel_id);
     chatChannelsManager.follow(channel);
-    document.querySelector(".chat-drawer").classList.remove("unconfirmed");
     document.body.classList.add("confirmed-event-assistance");
-    return;
-  }
-  if (status !== "going") {
+  } else if (status !== "going") {
     showCustomBBCode(false);
-
     const channel = await chatChannelsManager.find(topic.model.chat_channel_id);
     chatChannelsManager.unfollow(channel);
-    document.querySelector(".chat-drawer").classList.add("unconfirmed");
     document.body.classList.remove("confirmed-event-assistance");
   }
 }
 
 function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
-  const site = container.lookup("service:site");
-  if (!siteSettings.enable_livestream_chat) {
-    return;
-  }
-  const chatService = container.lookup("service:chat");
-  const chatSubscriptionsManager = container.lookup(
-    "service:chatSubscriptionsManager"
-  );
+  const currentUser = container.lookup("service:current-user");
   const store = container.lookup("service:store");
+  const topic = container.lookup("controller:topic");
   const chatChannelsManager = container.lookup("service:chat-channels-manager");
+  const chatService = container.lookup("service:chat");
   const appEvents = container.lookup("service:appEvents");
-  let topic = container.lookup("controller:topic");
-  const currentUser = api.getCurrentUser();
-  const applicationController = container.lookup("controller:application");
+  const site = container.lookup("site:main");
 
-  if (!currentUser || !chatService.userCanChat) {
+  if (!currentUser || !siteSettings.chat_enabled || !chatService.userCanChat) {
     return;
   }
 
-  appEvents.on("calendar:update-invitee-status", (data) => {
-    onAcceptInvite({
-      ...data,
-      appEvents,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
+  const events = [
+    "calendar:update-invitee-status",
+    "calendar:create-invitee-status",
+    "calendar:invitee-left-event",
+  ];
+
+  events.forEach((event) => {
+    appEvents.on(event, (data) => {
+      onAcceptInvite({
+        ...data,
+        chatChannelsManager,
+        topic,
+      });
     });
   });
 
-  appEvents.on("calendar:create-invitee-status", (data) => {
-    onAcceptInvite({
-      ...data,
-      appEvents,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
-    });
-  });
-
-  appEvents.on("calendar:invitee-left-event", (data) => {
-    onAcceptInvite({
-      ...data,
-      appEvents,
-      chatChannelsManager,
-      topic,
-      chatSubscriptionsManager,
-      chatService,
-    });
-  });
+  if (site.mobileView) {
+    api.headerIcons.add("livestream", MobileLivestreamChatIcon);
+  }
 
   api.onPageChange((url) => {
     const allowedPaths = siteSettings.embeddable_chat_allowed_paths.split("|");
 
+    // non livestream topics
     if (
-      allowedPaths.every((path) => !url.includes(path) && !url.startsWith(path))
+      allowedPaths.every(
+        (path) => !url.includes(path) && !url.startsWith(path)
+      ) ||
+      !topic?.model?.chat_channel_id
     ) {
-      document.body.classList.remove("custom-chat-enabled");
-      appEvents.trigger("chat:toggle-close");
-      return;
+      return false;
     }
 
-    if (!topic?.model?.chat_channel_id) {
-      // don't show the chat if there is no chat channel
-      document
-        .querySelector(".embeddable-chat-channel")
-        .style.setProperty("display", "none", "important");
-      document.body.classList.remove("custom-chat-enabled");
-      appEvents.trigger("chat:toggle-close");
-    } else {
-      updateTopicStylesWithChatChannel(topic, store, currentUser, site);
-      if (document.body.classList.contains("has-sidebar-page")) {
-        applicationController.toggleSidebar();
-      }
-
-      // Chat scrolls to the bottom of the page when the chat channel is loaded
-      // this is required for the chat message positioning to be correct.
-      // We need to scroll to the top of the page after the chat channel is loaded
-      // to avoid the page being rendered and the viewport being scrolled to the bottom.
-      // This is not an ideal solution, but it's the best we can do for now
-      later(() => {
-        document.documentElement.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-          inline: "start",
-        });
-      }, 500);
-    }
+    updateEventStylesByStatus(topic, store, currentUser);
   });
 }
 
-async function updateTopicStylesWithChatChannel(
-  topic,
-  store,
-  currentUser,
-  site
-) {
+async function updateEventStylesByStatus(topic, store, currentUser) {
   let isGoing;
   try {
+    const topicPost = parseInt(
+      document.getElementById("post_1").dataset.postId,
+      10
+    );
     const attendees = await store.findAll("discourse-post-event-invitee", {
       undefined,
-      post_id: topic.currentPostId,
+      post_id: topicPost,
       type: "going",
     });
-
     isGoing = attendees.content.some(
       (attendee) => attendee.user.id === currentUser.id
     );
     showCustomBBCode(isGoing);
-
-    if (!site.mobileView) {
-      document.body.classList.add("custom-chat-enabled");
-    }
+  } catch {
+    // no event found
   } finally {
     if (!isGoing) {
       document.body.classList.remove("confirmed-event-assistance");
     } else {
       document.body.classList.add("confirmed-event-assistance");
     }
-    document
-      .querySelector(".embeddable-chat-channel")
-      .style.setProperty("display", "block", "important");
   }
 }
 

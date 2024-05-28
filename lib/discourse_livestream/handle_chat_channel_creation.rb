@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 module DiscourseLivestream
   def self.handle_chat_channel_creation(topic)
-    return unless SiteSetting.enable_livestream_chat
     return if topic.category.blank?
     unless Chat::Channel.exists?(
              topic_id: topic.id,
              chatable_id: topic.category.id,
              chatable_type: "Category",
            )
-      if topic.category.present? &&
-           topic.tags.any? { |tag| tag.name == SiteSetting.topic_livestream_tag }
+      if topic.category.present? && topic.tags.any? { |tag| tag.name == "livestream" }
         channel =
           Chat::Channel.create!(
             chatable_id: topic.category.id,
@@ -21,7 +19,7 @@ module DiscourseLivestream
             topic: topic,
           )
 
-        channel.user_chat_channel_memberships.create!(user: topic.user, following: true)
+        channel.user_chat_channel_memberships.create!(user: topic.user, following: false)
       end
     end
   end
