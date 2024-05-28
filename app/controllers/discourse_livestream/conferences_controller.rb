@@ -69,7 +69,7 @@ module ::DiscourseLivestream
     def set_conference
       @conference =
         DiscourseLivestream::Conference.find_by_category_id(SiteSetting.conference_category_id)
-      raise ActiveRecord::RecordNotFound unless @conference.present?
+      raise ActiveRecord::RecordNotFound if @conference.blank?
     end
 
     def set_conference_group
@@ -79,7 +79,7 @@ module ::DiscourseLivestream
     end
 
     def ensure_logged_in
-      raise Discourse::NotLoggedIn.new unless current_user.present?
+      raise Discourse::NotLoggedIn.new if current_user.blank?
     end
   end
 end
