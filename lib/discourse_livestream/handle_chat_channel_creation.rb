@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 module DiscourseLivestream
   def self.handle_chat_channel_creation(topic)
-    return unless SiteSetting.enable_livestream_chat
     return if topic.category.blank?
     unless Chat::Channel.exists?(
              topic_id: topic.id,
