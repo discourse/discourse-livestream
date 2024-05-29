@@ -9,6 +9,7 @@ export default class EmbeddableChat extends Chat {
 
   canRenderChatChannel(topicController, mobileViewAllowed = false) {
     this.topicController = topicController;
+    console.log(this.topicController.model);
     if (
       this.site.mobileView === mobileViewAllowed &&
       this.siteSettings.chat_enabled &&
