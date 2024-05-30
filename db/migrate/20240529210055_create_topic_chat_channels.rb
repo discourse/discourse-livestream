@@ -8,6 +8,6 @@ class CreateTopicChatChannels < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :topic_chat_channels, [:topic_id, :chat_channel_id], unique: true
+    add_index :topic_chat_channels, %i[topic_id chat_channel_id], unique: true
   end
 end
