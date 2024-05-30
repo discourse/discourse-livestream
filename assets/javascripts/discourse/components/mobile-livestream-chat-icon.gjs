@@ -15,7 +15,7 @@ export default class MobileLivestreamChatIcon extends Component {
   <template>
     <li class="header-dropdown-toggle livestream-header-icon">
       <DButton
-        @icon="d-chat"
+        @icon="comments"
         class="icon btn-flat"
         tabindex="0"
         @action={{this.openLivestreamChat}}
