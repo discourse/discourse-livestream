@@ -58,7 +58,9 @@ function overrideChat(api, container) {
   });
 
   if (site.mobileView) {
-    api.headerIcons.add("livestream", MobileLivestreamChatIcon);
+    api.headerIcons.add("livestream", MobileLivestreamChatIcon, {
+      before: "chat",
+    });
   }
 
   api.onPageChange((url) => {

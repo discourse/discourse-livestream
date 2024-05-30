@@ -6,34 +6,37 @@ body.tag-livestream.chat-enabled {
       &::after {
         content: "";
         position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 10px;
-        height: 10px;
+        top: 9px;
+        right: 16px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
-        background-color: rgba(255, 0, 0, 0.874);
+        background-color: rgb(255, 0, 0);
         animation: pulse-circle 3s infinite;
       }
 
       @keyframes pulse-circle {
         0% {
           transform: scale(1);
-          background-color: rgba(255, 0, 0, 0.6);
+          background-color: rgba(255, 0, 0, 0.901);
         }
         50% {
-          transform: scale(1.5);
-          background-color: rgba(255, 0, 0, 0.3);
+          transform: scale(1.3);
+          background-color: rgba(255, 0, 0, 0.762);
         }
         100% {
           transform: scale(1);
-          background-color: rgba(255, 0, 0, 0.6);
+          background-color: rgba(255, 0, 0, 0.902);
         }
       }
     }
+  }
 
-    // hide the default chat icon in favor of the livestream icon
-    .chat-header-icon {
-      display: none;
+  // don't blur the background when the livestream chat modal is open
+  .livestream-chat-modal {
+    & ~ .d-modal__backdrop {
+      background-color: unset;
+      animation: none;
     }
   }
 
@@ -41,6 +44,7 @@ body.tag-livestream.chat-enabled {
     .d-modal__body {
       padding: 1em 0.4em 1em 0.4em;
     }
+
     #custom-chat-container {
       width: 100%;
       height: 400px !important;

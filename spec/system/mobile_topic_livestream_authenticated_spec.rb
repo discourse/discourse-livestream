@@ -18,15 +18,11 @@ describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated",
   context "when in a topic view" do
     it "does not display livestream chat icon on regular topics" do
       topic_livestream.create_regular_topic(composer, topic_page)
-
-      expect(topic_page).to have_css(".chat-header-icon")
       expect(topic_page).not_to have_css(".livestream-header-icon")
     end
 
     it "displays the livestream chat icon on livestream topics" do
       topic_livestream.create_livestream_topic(composer, topic_page, livestream_tag)
-
-      expect(topic_page).not_to have_css(".chat-header-icon")
       expect(topic_page).to have_css(".livestream-header-icon")
     end
 
