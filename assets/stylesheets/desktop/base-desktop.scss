@@ -11,6 +11,7 @@ body.tag-livestream.chat-enabled {
       "sidebar content livestream"
       "sidebar below-content livestream";
     margin: 0;
+    padding-right: 0;
     max-width: 100%;
   }
 
@@ -27,5 +28,6 @@ body.tag-livestream.chat-enabled {
     --1dvh: 1vh;
     align-self: start;
     overflow-y: auto;
+    margin-left: 1em;
   }
 }
