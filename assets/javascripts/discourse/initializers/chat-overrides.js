@@ -15,23 +15,23 @@ function showCustomBBCode(isGoing = false) {
 
 async function onAcceptInvite({ status, chatChannelsManager, topic }) {
   if (status === "going") {
-    showCustomBBCode(true);
-    document.body.classList.add("confirmed-event-assistance");
     if (topic.model.chat_channel_id != null) {
       const channel = await chatChannelsManager.find(
         topic.model.chat_channel_id
       );
       chatChannelsManager.follow(channel);
     }
+    showCustomBBCode(true);
+    document.body.classList.add("confirmed-event-assistance");
   } else if (status !== "going") {
-    showCustomBBCode(false);
-    document.body.classList.remove("confirmed-event-assistance");
     if (topic.model.chat_channel_id != null) {
       const channel = await chatChannelsManager.find(
         topic.model.chat_channel_id
       );
       chatChannelsManager.unfollow(channel);
     }
+    showCustomBBCode(false);
+    document.body.classList.remove("confirmed-event-assistance");
   }
 }
 
