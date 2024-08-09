@@ -37,10 +37,7 @@ async function onAcceptInvite({ status, chatChannelsManager, topic }) {
 
 function overrideChat(api, container) {
   const siteSettings = container.lookup("service:site-settings");
-  const currentUser = container.lookup("service:current-user");
-  const store = container.lookup("service:store");
-  const topic = container.lookup("controller:topic");
-  const chatChannelsManager = container.lookup("service:chat-channels-manager");
+  const currentUser = api.getCurrentUser();
   const chatService = container.lookup("service:chat");
   const appEvents = container.lookup("service:appEvents");
   const site = container.lookup("site:main");
@@ -57,6 +54,11 @@ function overrideChat(api, container) {
 
   events.forEach((event) => {
     appEvents.on(event, (data) => {
+      const topic = container.lookup("controller:topic");
+      const chatChannelsManager = container.lookup(
+        "service:chat-channels-manager"
+      );
+
       onAcceptInvite({
         ...data,
         chatChannelsManager,
@@ -72,6 +74,8 @@ function overrideChat(api, container) {
   }
 
   api.onPageChange((url) => {
+    const store = container.lookup("service:store");
+    const topic = container.lookup("controller:topic");
     const allowedPaths = siteSettings.embeddable_chat_allowed_paths.split("|");
 
     // non livestream topics
