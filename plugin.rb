@@ -26,11 +26,13 @@ after_initialize do
   Discourse::Application.routes.append { mount ::DiscourseLivestream::Engine, at: "/" }
 
   require_relative "lib/discourse_livestream/topic_extension"
+  require_relative "lib/discourse_livestream/chat_channel_extension"
   require_relative "lib/discourse_livestream/handle_topic_chat_channel_creation"
   require_relative "app/models/discourse_livestream/topic_chat_channel"
 
   reloadable_patch do
     Topic.prepend DiscourseLivestream::TopicExtension
+    Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
 
     add_to_serializer(:topic_view, :chat_channel_id) do
       return nil if object.topic.topic_chat_channel.blank?
