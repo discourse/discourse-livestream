@@ -1,14 +1,13 @@
-import i18n from "discourse-common/helpers/i18n";
+import Component from "@glimmer/component";
+import { inject as controller } from "@ember/controller";
+import { inject as service } from "@ember/service";
 import DButton from "discourse/components/d-button";
 import concatClass from "discourse/helpers/concat-class";
-import { inject as controller } from "@ember/controller";
-import Component from "@glimmer/component";
-import { inject as service } from "@ember/service";
-import LIVESTREAM_TAG_NAME from "../../services/embeddable-chat";
+import i18n from "discourse-common/helpers/i18n";
 
 export default class JoinChannelMessage extends Component {
-  @controller("topic") topicController;
   @service embeddableChat;
+  @controller("topic") topicController;
 
   get shouldRenderJoinText() {
     const topic = this.topicController?.model;
