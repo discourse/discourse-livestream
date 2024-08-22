@@ -1,6 +1,8 @@
 import { inject as service } from "@ember/service";
 import Chat from "discourse/plugins/chat/discourse/services/chat";
 
+export const LIVESTREAM_TAG_NAME = "livestream";
+
 export default class EmbeddableChat extends Chat {
   @service siteSettings;
   @service site;
@@ -29,6 +31,10 @@ export default class EmbeddableChat extends Chat {
     }
 
     return false;
+  }
+
+  topicHasLivestreamTag(topic) {
+    return topic?.tags?.some?.((tag) => tag === LIVESTREAM_TAG_NAME) || false;
   }
 
   get chatChannelId() {
