@@ -81,6 +81,18 @@ RSpec.describe DiscourseLivestream do
 
           expect(Chat::Channel.count).to eq(0)
         end
+
+        it "updated the chat channel when the topic category is updated" do
+          described_class.handle_topic_chat_channel_creation(topic)
+
+          expect(Chat::Channel.first.chatable).to eq(category)
+
+          new_category = Fabricate(:category)
+
+          topic.update!(category: new_category)
+
+          expect(Chat::Channel.first.chatable).to eq(new_category)
+        end
       end
     end
   end
