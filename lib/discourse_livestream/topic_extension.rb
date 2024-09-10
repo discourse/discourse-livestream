@@ -10,10 +10,12 @@ module DiscourseLivestream
               dependent: :destroy
 
       after_update do
-        if topic_chat_channel.present? &&
-             topic_chat_channel&.chat_channel&.chatable_id != category_id
-          topic_chat_channel.chat_channel.update!(chatable_id: category_id)
-        end
+        chat_channel = topic_chat_channel&.chat_channel
+
+        next if chat_channel.nil?
+        next if chat_channel.chatable_id == category_id
+
+        chat_channel.update!(chatable_id: category_id)
       end
     end
   end
