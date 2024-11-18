@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { inject as controller } from "@ember/controller";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import EmbeddableChatChannel from "../../components/embeddable-chat-channel";
 
 export default class EmbedableChatChannelConnector extends Component {
