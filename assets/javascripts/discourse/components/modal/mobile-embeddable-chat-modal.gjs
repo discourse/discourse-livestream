@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { inject as controller } from "@ember/controller";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import DModal from "discourse/components/d-modal";
 import EmbeddableChatChannel from "../embeddable-chat-channel";
 

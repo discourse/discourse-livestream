@@ -1,4 +1,4 @@
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import Chat from "discourse/plugins/chat/discourse/services/chat";
 
 export const LIVESTREAM_TAG_NAME = "livestream";

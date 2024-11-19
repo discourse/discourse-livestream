@@ -4,7 +4,7 @@ import { inject as controller } from "@ember/controller";
 import { fn } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import and from "truth-helpers/helpers/and";
 import not from "truth-helpers/helpers/not";
 import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
