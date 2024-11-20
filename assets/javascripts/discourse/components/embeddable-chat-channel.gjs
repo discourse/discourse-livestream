@@ -22,6 +22,12 @@ export default class EmbedableChatChannel extends Component {
   @tracked topicChannelId = null;
   @tracked loadingChannel = false;
 
+  willDestroy() {
+    super.willDestroy(...arguments);
+    this.chatDraftsManager.reset();
+    this.embeddableChat.activeChannel = null;
+  }
+
   @action
   async findChannel(channelId) {
     try {
@@ -32,12 +38,6 @@ export default class EmbedableChatChannel extends Component {
     } finally {
       this.loadingChannel = false;
     }
-  }
-
-  willDestroy() {
-    super.willDestroy(...arguments);
-    this.chatDraftsManager.reset();
-    this.embeddableChat.activeChannel = null;
   }
 
   <template>

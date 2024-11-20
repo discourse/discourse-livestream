@@ -40,7 +40,7 @@ function overrideChat(api, container) {
   const currentUser = api.getCurrentUser();
   const chatService = container.lookup("service:chat");
   const appEvents = container.lookup("service:appEvents");
-  const site = container.lookup("site:main");
+  const site = container.lookup("service:site");
 
   if (!currentUser || !siteSettings.chat_enabled || !chatService.userCanChat) {
     return;
