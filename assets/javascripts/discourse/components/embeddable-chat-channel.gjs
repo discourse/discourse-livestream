@@ -8,6 +8,8 @@ import { service } from "@ember/service";
 import and from "truth-helpers/helpers/and";
 import not from "truth-helpers/helpers/not";
 import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
+import toggleClass from "../modifiers/toggle-class"
+import DButton from "discourse/components/d-button";
 
 export default class EmbedableChatChannel extends Component {
   @service chatChannelsManager;
@@ -40,16 +42,34 @@ export default class EmbedableChatChannel extends Component {
     }
   }
 
+  @action
+  closeChat() {
+    this.embeddableChat.toggleChatVisibility();
+  }
+
   <template>
+
     <div
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible 'mobile'}}
-      class="chat-drawer {{unless this.siteSettings.modal_mobile_chat 'no-modal-mobile'}}"
+      class=" {{unless this.siteSettings.modal_mobile_chat 'no-modal-mobile'}}"
       {{didInsert (fn this.findChannel @chatChannelId)}}
     >
-      {{#if (and this.embeddableChat.activeChannel (not this.loadingChannel))}}
-        <ChatChannel @channel={{this.embeddableChat.activeChannel}} />
-      {{/if}}
+    <div
+      class="c-navbar-container">
+        <DButton
+          @icon="xmark"
+          @action={{this.closeChat}}
+          @title="chat.close"
+          class="btn-transparent no-text c-navbar__close-drawer-button"
+        />
+    </div>
+      <div
+      class="chat-drawer">
+        {{#if (and this.embeddableChat.activeChannel (not this.loadingChannel))}}
+          <ChatChannel @channel={{this.embeddableChat.activeChannel}} />
+        {{/if}}
+      </div>
     </div>
   </template>
 }

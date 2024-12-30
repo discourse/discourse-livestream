@@ -32,76 +32,53 @@ body.tag-livestream.chat-enabled {
     }
   }
 
-
-  .d-modal__backdrop {
-    display: none;
-}
-
-
-
-
-#main-outlet-wrapper #main-outlet {
-    overflow-y: auto;
-    max-height: 100vh;
-}
-
-
-  body.tag-livestream.chat-enabled .livestream-chat-modal~.d-modal__backdrop {
-    display: none; // either display or pointer-events will work
-    pointer-events: none;
-  }
-  
-  html:has(.d-modal.livestream-chat-modal) {
-      overflow-y: auto; // makes page scrollable again, overriding overflow-y: hidden
-  }
-
-
-  
-
-  #custom-chat-container{
-    .d-modal__container {
-      bottom: 0;
-  } 
-  .d-modal.livestream-chat-modal {
-
-  }
-  
-  .mobile{
-    display: absolute;
+  #custom-chat-container.mobile{
+    display: flex;
+    flex-direction: column;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     width: 100%;
     max-height: 50%;
+    padding-bottom: 5rem;
+
     background: var(--d-sidebar-background);
     z-index: 50;
     resize: both;
-    overflow-y: auto;
+    overflow-y: hidden;
+    border-top: 1px solid var(--primary-low);
+
+    .c-navbar-container{
+      display: flex;
+      padding-top: 0.3rem;
+      padding-bottom: 0.3rem;
+      width: 100%;
+      height: 5rem;
+    }
+    div.chat-drawer {
+      display: flex;
+      overflow-y: auto;
+      width: 100%;
+      max-height: 100%;
+    }
+
+    .c-navbar__close-drawer-button{
+      position: absolute;
+      right: 0;
+      transform: translateX(-5%);
+      top: 50%;
+    transform: translateY(-50%);
+    }
 
     .chat-composer__wrapper {
       position: fixed;
-    bottom: 0;
+    bottom: 3rem;
     background: var(--d-sidebar-background);
     width: 100%;
     }
     
   }
-
-
-}
-
-
-  
-
-body.tag-livestream.chat-enabled .livestream-chat-modal~.d-modal__backdrop {
-  pointer-events: none; // clickable through .d-modal__backdrop
-}
-
-html:has(.d-modal.livestream-chat-modal) {
-    overflow-y: auto; // makes page scrollable again, overriding overflow-y: hidden
-}
-
 
 
   // don't blur the background when the livestream chat modal is open

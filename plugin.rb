@@ -17,7 +17,6 @@ Discourse::Application.routes.append { mount ::DiscourseLivestream::Engine, at: 
 
 require_relative "lib/discourse_livestream/topic_extension"
 require_relative "lib/discourse_livestream/chat_channel_extension"
-require_relative "lib/discourse_livestream/channels_controller_extension"
 require_relative "lib/discourse_livestream/handle_topic_chat_channel_creation"
 require_relative "app/models/discourse_livestream/topic_chat_channel"
 
