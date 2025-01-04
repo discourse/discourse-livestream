@@ -47,23 +47,31 @@ export default class EmbedableChatChannel extends Component {
     this.embeddableChat.toggleChatVisibility();
   }
 
+  siteNoModaMobileView(){
+    return this.siteSettings.modal_mobile_chat  && this.site.mobileView
+
+  }
+
   <template>
 
     <div
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible 'mobile'}}
-      class=" {{unless this.siteSettings.modal_mobile_chat 'no-modal-mobile'}}"
+      class="{{if (not this.siteNoModaMobileView) 'no-modal-mobile'}}"
       {{didInsert (fn this.findChannel @chatChannelId)}}
     >
-    <div
-      class="c-navbar-container">
-        <DButton
-          @icon="xmark"
-          @action={{this.closeChat}}
-          @title="chat.close"
-          class="btn-transparent no-text c-navbar__close-drawer-button"
-        />
-    </div>
+    {{#if (not this.siteNoModaMobileView)}}
+      <div
+        class="c-navbar-container">
+
+          <DButton
+            @icon="xmark"
+            @action={{this.closeChat}}
+            @title="chat.close"
+            class="btn-transparent no-text c-navbar__close-drawer-button"
+          />
+      </div>
+    {{/if}}
       <div
       class="chat-drawer">
         {{#if (and this.embeddableChat.activeChannel (not this.loadingChannel))}}

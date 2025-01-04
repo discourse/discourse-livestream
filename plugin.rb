@@ -47,25 +47,110 @@ after_initialize do
     end
   end
 
-  register_modifier(
-    :can_join_chat_channel_modifier,
-  ) do |f, chat_channel, user, post_allowed_category_ids|
-    topic_chat_channel =
-      DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: chat_channel.chatable_id)
-    guardian = Guardian.new(user)
+  register_modifier(:list_user_channels_modifier) do |f, user|
+    user_livestream_chat_channel_memberships =
+      Chat::UserChatChannelMembership
+        .joins(chat_channel: { livestream_topic_chat_channel: :topic })
+        .where(user: user)
+        .includes(chat_channel: { livestream_topic_chat_channel: :topic })
 
-    if topic_chat_channel
-      user_allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
-      user_group_ids = user.groups.pluck("groups.id")
-      user_allowed_in_topic_chat_channel = (user_allowed_groups & user_group_ids).any?
-    else
-      user_allowed_in_topic_chat_channel = true
+    user_allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
+    user_group_ids = user.groups.ids
+    user_allowed_in_topic_chat_channels = (user_allowed_groups & user_group_ids).any?
+
+    user_livestream_chat_channel_memberships.each do |membership|
+      topic_chat_channel = membership.chat_channel.livestream_topic_chat_channel
+      next unless topic_chat_channel
+
+      event_invitee =
+        topic_chat_channel.topic.posts.first&.event&.invitees&.find_by(user_id: user.id)
+      next unless event_invitee
+
+      invitee_status = event_invitee.status
+      is_going = invitee_status == DiscoursePostEvent::Invitee.statuses[:going]
+
+      if user_allowed_in_topic_chat_channels && is_going && !membership.following
+        Chat::ChannelMembershipManager.new(membership.chat_channel).follow(user)
+      elsif !user_allowed_in_topic_chat_channels && is_going && membership.following
+        Chat::ChannelMembershipManager.new(membership.chat_channel).unfollow(user)
+      end
     end
 
-    guardian.can_preview_chat_channel?(chat_channel) &&
-      guardian.can_post_in_chatable?(
-        chat_channel.chatable,
-        post_allowed_category_ids: post_allowed_category_ids,
-      ) && user_allowed_in_topic_chat_channel
+    Chat::UserChatChannelMembership.where(user: user)
+  end
+
+  # register_modifier(:find_channel_for_user_modifier) do |f, params, object|
+  #   topic_chat_channel =
+  #     DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: params[:chat_channel_id])
+
+  #   user = User.find(params[:user_id])
+
+  #   user_event_invitee =
+  #     topic_chat_channel.topic.posts.first.event.invitees.where(
+  #       user_id: user.id,
+  #     ) if topic_chat_channel
+
+  #   user_allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
+  #   user_group_ids = user.groups.pluck("groups.id")
+  #   user_allowed_in_topic_chat_channels = (user_allowed_groups & user_group_ids).any?
+  #   channel_membership =
+  #     Chat::UserChatChannelMembership.includes(:user, :chat_channel).find_by(params)
+  #   if topic_chat_channel && user_allowed_in_topic_chat_channels &&
+  #        user_event_invitee.status == DiscourseCalendar::Invitee.statuses[:going] &&
+  #        channel_membership.following == false
+  #     object.follow(user)
+  #     channel_membership.following = true
+  #   elsif topic_chat_channel && !user_allowed_in_topic_chat_channels &&
+  #         user_event_invitee.status == DiscourseCalendar::Invitee.statuses[:going] &&
+  #         channel_membership.following == true
+  #     object.unfollow(user)
+  #     channel_membership.following = false
+  #   end
+
+  #   channel_membership
+  # end
+
+  # register_modifier(:current_user_membership_modifier) do |f, current_user_membership, scope|
+  #   current_user_membership =
+  #     Chat::BaseChannelMembershipSerializer.new(
+  #       current_user_membership,
+  #       scope: scope,
+  #       root: false,
+  #     ).as_json
+
+  #   topic_chat_channel =
+  #     DiscourseLivestream::TopicChatChannel.find_by(
+  #       chat_channel_id: current_user_membership[:chat_channel_id],
+  #     )
+
+  #   current_user_membership
+  # end
+
+  register_modifier(:follow_modifier) do |f, channel, user, membership, object|
+    puts channel.inspect
+    topic_chat_channel = DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: channel.id)
+
+    user_allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
+    user_group_ids = user.groups.pluck("groups.id")
+    user_allowed_in_topic_chat_channels = (user_allowed_groups & user_group_ids).any?
+    if topic_chat_channel && !user_allowed_in_topic_chat_channels
+      ActiveRecord::Base.transaction do
+        if membership.following
+          membership.update!(following: false)
+          object.recalculate_user_count
+        end
+      end
+    else
+      ActiveRecord::Base.transaction do
+        if membership.new_record?
+          membership.save!
+          object.recalculate_user_count
+        elsif !membership.following
+          membership.update!(following: true)
+          object.recalculate_user_count
+        end
+      end
+    end
+    membership
   end
 end
