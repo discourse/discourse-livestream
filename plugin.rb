@@ -58,76 +58,28 @@ after_initialize do
     user_group_ids = user.groups.ids
     user_allowed_in_topic_chat_channels = (user_allowed_groups & user_group_ids).any?
 
-    user_livestream_chat_channel_memberships.each do |membership|
-      topic_chat_channel = membership.chat_channel.livestream_topic_chat_channel
-      next unless topic_chat_channel
+    if SiteSetting.calendar_enabled && SiteSetting.discourse_post_event_enabled
+      user_livestream_chat_channel_memberships.each do |membership|
+        topic_chat_channel = membership.chat_channel.livestream_topic_chat_channel
+        next unless topic_chat_channel
 
-      event_invitee =
-        topic_chat_channel.topic.posts.first&.event&.invitees&.find_by(user_id: user.id)
-      next unless event_invitee
+        event_invitee =
+          topic_chat_channel.topic.posts.first&.event&.invitees&.find_by(user_id: user.id)
+        next unless event_invitee
 
-      invitee_status = event_invitee.status
-      is_going = invitee_status == DiscoursePostEvent::Invitee.statuses[:going]
-
-      if user_allowed_in_topic_chat_channels && is_going && !membership.following
-        Chat::ChannelMembershipManager.new(membership.chat_channel).follow(user)
-      elsif !user_allowed_in_topic_chat_channels && is_going && membership.following
-        Chat::ChannelMembershipManager.new(membership.chat_channel).unfollow(user)
+        invitee_status = event_invitee.status
+        is_going = invitee_status == DiscoursePostEvent::Invitee.statuses[:going]
+        if user_allowed_in_topic_chat_channels && is_going && !membership.following
+          Chat::ChannelMembershipManager.new(membership.chat_channel).follow(user)
+        elsif !user_allowed_in_topic_chat_channels && is_going && membership.following
+          Chat::ChannelMembershipManager.new(membership.chat_channel).unfollow(user)
+        end
       end
     end
-
     Chat::UserChatChannelMembership.where(user: user)
   end
 
-  # register_modifier(:find_channel_for_user_modifier) do |f, params, object|
-  #   topic_chat_channel =
-  #     DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: params[:chat_channel_id])
-
-  #   user = User.find(params[:user_id])
-
-  #   user_event_invitee =
-  #     topic_chat_channel.topic.posts.first.event.invitees.where(
-  #       user_id: user.id,
-  #     ) if topic_chat_channel
-
-  #   user_allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
-  #   user_group_ids = user.groups.pluck("groups.id")
-  #   user_allowed_in_topic_chat_channels = (user_allowed_groups & user_group_ids).any?
-  #   channel_membership =
-  #     Chat::UserChatChannelMembership.includes(:user, :chat_channel).find_by(params)
-  #   if topic_chat_channel && user_allowed_in_topic_chat_channels &&
-  #        user_event_invitee.status == DiscourseCalendar::Invitee.statuses[:going] &&
-  #        channel_membership.following == false
-  #     object.follow(user)
-  #     channel_membership.following = true
-  #   elsif topic_chat_channel && !user_allowed_in_topic_chat_channels &&
-  #         user_event_invitee.status == DiscourseCalendar::Invitee.statuses[:going] &&
-  #         channel_membership.following == true
-  #     object.unfollow(user)
-  #     channel_membership.following = false
-  #   end
-
-  #   channel_membership
-  # end
-
-  # register_modifier(:current_user_membership_modifier) do |f, current_user_membership, scope|
-  #   current_user_membership =
-  #     Chat::BaseChannelMembershipSerializer.new(
-  #       current_user_membership,
-  #       scope: scope,
-  #       root: false,
-  #     ).as_json
-
-  #   topic_chat_channel =
-  #     DiscourseLivestream::TopicChatChannel.find_by(
-  #       chat_channel_id: current_user_membership[:chat_channel_id],
-  #     )
-
-  #   current_user_membership
-  # end
-
   register_modifier(:follow_modifier) do |f, channel, user, membership, object|
-    puts channel.inspect
     topic_chat_channel = DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: channel.id)
 
     user_allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
