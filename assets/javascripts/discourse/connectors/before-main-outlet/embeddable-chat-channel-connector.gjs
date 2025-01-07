@@ -5,13 +5,17 @@ import EmbeddableChatChannel from "../../components/embeddable-chat-channel";
 
 export default class EmbedableChatChannelConnector extends Component {
   @service embeddableChat;
-  @service siteSettings; 
+  @service siteSettings;
   @service site;
   @controller("topic") topicController;
 
   get shouldRender() {
-    let mobileView =  !this.siteSettings.modal_mobile_chat && this.site.mobileView;
-    return this.embeddableChat.canRenderChatChannel(this.topicController, mobileView);
+    let mobileView =
+      !this.siteSettings.modal_mobile_chat && this.site.mobileView;
+    return this.embeddableChat.canRenderChatChannel(
+      this.topicController,
+      mobileView
+    );
   }
 
   <template>

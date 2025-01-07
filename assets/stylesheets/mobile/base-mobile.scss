@@ -32,7 +32,7 @@ body.tag-livestream.chat-enabled {
     }
   }
 
-  #custom-chat-container.mobile.no-modal-mobile{
+  #custom-chat-container.mobile.no-modal-mobile {
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -49,7 +49,7 @@ body.tag-livestream.chat-enabled {
     overflow-y: hidden;
     border-top: 1px solid var(--primary-low);
 
-    .c-navbar-container{
+    .c-navbar-container {
       display: flex;
       padding-top: 0.3rem;
       padding-bottom: 0.3rem;
@@ -63,23 +63,21 @@ body.tag-livestream.chat-enabled {
       max-height: 100%;
     }
 
-    .c-navbar__close-drawer-button{
+    .c-navbar__close-drawer-button {
       position: absolute;
       right: 0;
       transform: translateX(-5%);
       top: 50%;
-    transform: translateY(-50%);
+      transform: translateY(-50%);
     }
 
     .chat-composer__wrapper {
       position: fixed;
-    bottom: 3rem;
-    background: var(--d-sidebar-background);
-    width: 100%;
+      bottom: 3rem;
+      background: var(--d-sidebar-background);
+      width: 100%;
     }
-    
   }
-
 
   // don't blur the background when the livestream chat modal is open
   .livestream-chat-modal {

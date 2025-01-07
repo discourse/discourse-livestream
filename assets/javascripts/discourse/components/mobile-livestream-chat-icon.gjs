@@ -11,21 +11,21 @@ export default class MobileLivestreamChatIcon extends Component {
 
   @action
   openLivestreamChat() {
-    if (this.siteSettings.modal_mobile_chat_channel)  {
+    if (this.siteSettings.modal_mobile_chat_channel) {
       this.modal.show(MobileEmbeddableChatModal);
-    } else{
+    } else {
       this.embeddableChat.toggleChatVisibility();
     }
   }
 
   <template>
-      <li class="header-dropdown-toggle livestream-header-icon">
-        <DButton
-          @icon="comments"
-          class="icon btn-flat"
-          tabindex="0"
-          @action={{this.openLivestreamChat}}
-        />
-      </li>
+    <li class="header-dropdown-toggle livestream-header-icon">
+      <DButton
+        @icon="comments"
+        class="icon btn-flat"
+        tabindex="0"
+        @action={{this.openLivestreamChat}}
+      />
+    </li>
   </template>
 }

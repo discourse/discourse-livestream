@@ -8,7 +8,7 @@ import { service } from "@ember/service";
 import and from "truth-helpers/helpers/and";
 import not from "truth-helpers/helpers/not";
 import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
-import toggleClass from "../modifiers/toggle-class"
+import toggleClass from "../modifiers/toggle-class";
 import DButton from "discourse/components/d-button";
 
 export default class EmbedableChatChannel extends Component {
@@ -47,22 +47,19 @@ export default class EmbedableChatChannel extends Component {
     this.embeddableChat.toggleChatVisibility();
   }
 
-  siteNoModaMobileView(){
-    return this.siteSettings.modal_mobile_chat  && this.site.mobileView
-
+  siteNoModaMobileView() {
+    return this.siteSettings.modal_mobile_chat && this.site.mobileView;
   }
 
   <template>
-
     <div
       id="custom-chat-container"
-      {{toggleClass this.embeddableChat.isMobileChatVisible 'mobile'}}
+      {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
       class="{{if (not this.siteNoModaMobileView) 'no-modal-mobile'}}"
       {{didInsert (fn this.findChannel @chatChannelId)}}
     >
-    {{#if (not this.siteNoModaMobileView)}}
-      <div
-        class="c-navbar-container">
+      {{#if (not this.siteNoModaMobileView)}}
+        <div class="c-navbar-container">
 
           <DButton
             @icon="xmark"
@@ -70,11 +67,12 @@ export default class EmbedableChatChannel extends Component {
             @title="chat.close"
             class="btn-transparent no-text c-navbar__close-drawer-button"
           />
-      </div>
-    {{/if}}
-      <div
-      class="chat-drawer">
-        {{#if (and this.embeddableChat.activeChannel (not this.loadingChannel))}}
+        </div>
+      {{/if}}
+      <div class="chat-drawer">
+        {{#if
+          (and this.embeddableChat.activeChannel (not this.loadingChannel))
+        }}
           <ChatChannel @channel={{this.embeddableChat.activeChannel}} />
         {{/if}}
       </div>
