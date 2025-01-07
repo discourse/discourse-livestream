@@ -1,6 +1,6 @@
-import { service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
+import { service } from "@ember/service";
 import Chat from "discourse/plugins/chat/discourse/services/chat";
 
 export const LIVESTREAM_TAG_NAME = "livestream";
@@ -39,7 +39,6 @@ export default class EmbeddableChat extends Chat {
 
   @action
   toggleChatVisibility() {
-    console.log(this.isMobileChatVisible);
     this.isMobileChatVisible = !this.isMobileChatVisible;
   }
 
