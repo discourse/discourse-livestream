@@ -29,5 +29,9 @@ body.tag-livestream.chat-enabled {
     align-self: start;
     overflow-y: auto;
     margin-left: 1em;
+
+    .livestream-chat-close{
+      display: none;
+    }
   }
 }

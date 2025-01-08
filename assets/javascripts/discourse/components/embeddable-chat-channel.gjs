@@ -56,11 +56,11 @@ export default class EmbedableChatChannel extends Component {
     <div
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
-      class={{if (not (this.siteNoModalMobileView)) 'no-modal-mobile'}}
+      class={{unless (this.siteNoModalMobileView) 'no-modal-mobile'}}
       {{didInsert (fn this.findChannel @chatChannelId)}}
     >
-      {{#if (not this.siteNoModalMobileView)}}
-        <div class="c-navbar-container">
+      {{#unless (this.siteNoModalMobileView)}}
+        <div class="c-navbar-container livestream-chat-close">
 
           <DButton
             @icon="xmark"
@@ -69,7 +69,7 @@ export default class EmbedableChatChannel extends Component {
             class="btn-transparent no-text c-navbar__close-drawer-button"
           />
         </div>
-      {{/if}}
+      {{/unless}}
       <div class="chat-drawer">
         {{#if
           (and this.embeddableChat.activeChannel (not this.loadingChannel))
