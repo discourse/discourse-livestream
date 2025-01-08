@@ -83,7 +83,7 @@ after_initialize do
     topic_chat_channel = DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: channel.id)
 
     user_allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
-    user_group_ids = user.groups.pluck("groups.id")
+    user_group_ids = user.groups.ids
     user_allowed_in_topic_chat_channels = (user_allowed_groups & user_group_ids).any?
     if topic_chat_channel && !user_allowed_in_topic_chat_channels
       ActiveRecord::Base.transaction do
