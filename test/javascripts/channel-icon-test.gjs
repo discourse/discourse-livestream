@@ -1,10 +1,9 @@
-import { click,render } from "@ember/test-helpers";
+import { click, render } from "@ember/test-helpers";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 import sinon from "sinon";
 import MobileLivestreamChatIcon from "discourse/plugins/discourse-livestream/discourse/components/mobile-livestream-chat-icon";
 import MobileEmbeddableChatModal from "discourse/plugins/discourse-livestream/discourse/components/modal/mobile-embeddable-chat-modal";
-
 
 module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
   setupRenderingTest(hooks);
@@ -27,8 +26,10 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     assert.ok(showSpy.calledWith(MobileEmbeddableChatModal));
   });
 
-   test("it toggles chat visibility if modal_mobile_chat_channel is false", async function (assert) {
-     this.owner.lookup("service:site-settings").modal_mobile_chat_channel = false;
+  test("it toggles chat visibility if modal_mobile_chat_channel is false", async function (assert) {
+    this.owner.lookup(
+      "service:site-settings"
+    ).modal_mobile_chat_channel = false;
     const embeddableChatService = this.owner.lookup("service:embeddable-chat");
 
     assert.false(
