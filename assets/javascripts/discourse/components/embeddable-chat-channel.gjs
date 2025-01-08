@@ -56,7 +56,7 @@ export default class EmbedableChatChannel extends Component {
     <div
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
-      class={{unless (this.siteNoModalMobileView) 'no-modal-mobile'}}
+      class={{unless (this.siteNoModalMobileView) "no-modal-mobile"}}
       {{didInsert (fn this.findChannel @chatChannelId)}}
     >
       {{#unless (this.siteNoModalMobileView)}}
