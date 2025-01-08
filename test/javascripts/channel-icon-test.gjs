@@ -15,11 +15,11 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     assert.dom("button").hasClass("icon");
   });
 
-  test("it opens the chat modal if modal_mobile_chat_channel_channel is true", async function (assert) {
+  test("it opens the chat modal if modal_mobile_chat_channel is true", async function (assert) {
     const modalService = this.owner.lookup("service:modal");
     const showSpy = sinon.spy(modalService, "show");
 
-    this.owner.lookup("service:site-settings").modal_mobile_chat_channel_channel = true;
+    this.owner.lookup("service:site-settings").modal_mobile_chat_channel = true;
 
     await render(<template><MobileLivestreamChatIcon /></template>);
     await click("button");
@@ -27,11 +27,11 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     assert.ok(showSpy.calledWith(MobileEmbeddableChatModal));
   });
 
-   test("it toggles chat visibility if modal_mobile_chat_channel_channel is false", async function (assert) {
-     this.owner.lookup("service:site-settings").modal_mobile_chat_channel_channel = false;
+   test("it toggles chat visibility if modal_mobile_chat_channel is false", async function (assert) {
+     this.owner.lookup("service:site-settings").modal_mobile_chat_channel = false;
     const embeddableChatService = this.owner.lookup("service:embeddable-chat");
 
-    assert.strictEqual(
+    assert.false(
       embeddableChatService.isMobileChatVisible,
       false,
       "Initial state isMobileChatVisible is false"
@@ -40,7 +40,7 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     await render(<template><MobileLivestreamChatIcon /></template>);
     await click("button");
 
-    assert.strictEqual(
+    assert.true(
       embeddableChatService.isMobileChatVisible,
       true,
       "isMobileChatVisible is true after clicking button"
@@ -48,7 +48,7 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
 
     await click("button");
 
-    assert.strictEqual(
+    assert.false(
       embeddableChatService.isMobileChatVisible,
       false,
       "isMobileChatVisible is false after clicking button again"
