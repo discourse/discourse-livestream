@@ -17,6 +17,7 @@ export default class EmbedableChatChannel extends Component {
   @service embeddableChat;
   @service appEvents;
   @service site;
+  @service siteSettings;
   @service chatDraftsManager;
   @controller("topic") topicController;
 
@@ -47,18 +48,18 @@ export default class EmbedableChatChannel extends Component {
     this.embeddableChat.toggleChatVisibility();
   }
 
-  siteNoModaMobileView() {
-    return this.siteSettings.modal_mobile_chat && this.site.mobileView;
+  get siteNoModalMobileView() {
+    return this.siteSettings.modal_mobile_chat_channel && this.site.mobileView;
   }
 
   <template>
     <div
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
-      class="{{if (not this.siteNoModaMobileView) 'no-modal-mobile'}}"
+      class={{if (not (this.siteNoModalMobileView)) 'no-modal-mobile'}}
       {{didInsert (fn this.findChannel @chatChannelId)}}
     >
-      {{#if (not this.siteNoModaMobileView)}}
+      {{#if (not this.siteNoModalMobileView)}}
         <div class="c-navbar-container">
 
           <DButton

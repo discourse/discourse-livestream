@@ -32,6 +32,10 @@ body.tag-livestream.chat-enabled {
     }
   }
 
+  #custom-chat-container.no-modal-mobile {
+    display: none;
+  }
+
   #custom-chat-container.mobile.no-modal-mobile {
     display: flex;
     flex-direction: column;
