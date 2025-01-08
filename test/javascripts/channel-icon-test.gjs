@@ -33,7 +33,6 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
 
     assert.false(
       embeddableChatService.isMobileChatVisible,
-      false,
       "Initial state isMobileChatVisible is false"
     );
 
@@ -42,7 +41,6 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
 
     assert.true(
       embeddableChatService.isMobileChatVisible,
-      true,
       "isMobileChatVisible is true after clicking button"
     );
 
@@ -50,7 +48,6 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
 
     assert.false(
       embeddableChatService.isMobileChatVisible,
-      false,
       "isMobileChatVisible is false after clicking button again"
     );
   });
