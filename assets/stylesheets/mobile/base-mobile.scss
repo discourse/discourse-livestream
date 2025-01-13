@@ -32,8 +32,11 @@ body.tag-livestream.chat-enabled {
     }
   }
 
-
- 
+  #custom-chat-container {
+    .livestream-chat-close {
+      display: none;
+    }
+  }
 
   #custom-chat-container.no-modal-mobile {
     display: none;
@@ -63,6 +66,7 @@ body.tag-livestream.chat-enabled {
       width: 100%;
       height: 5rem;
     }
+
     div.chat-drawer {
       display: flex;
       overflow-y: auto;
@@ -83,6 +87,13 @@ body.tag-livestream.chat-enabled {
       bottom: 3rem;
       background: var(--d-sidebar-background);
       width: 100%;
+      #channel-composer {
+        height: auto !important;
+      }
+
+      #channel-composer {
+        height: auto !important;
+      }
     }
   }
 
