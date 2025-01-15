@@ -6,7 +6,7 @@ plugins:
     type: list
     default: "/t"
     client: true
-  modal_mobile_chat_channel:
+  enable_modal_chat_on_mobile:
     default: true
     client: true
   livestream_chat_allowed_groups:

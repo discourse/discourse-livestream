@@ -11,7 +11,7 @@ export default class EmbedableChatChannelConnector extends Component {
 
   get shouldRender() {
     let mobileView =
-      !this.siteSettings.modal_mobile_chat_channel && this.site.mobileView;
+      !this.siteSettings.enable_modal_chat_on_mobile && this.site.mobileView;
 
     return this.embeddableChat.canRenderChatChannel(
       this.topicController,
