@@ -31,11 +31,6 @@ after_initialize do
     end
   end
 
-  def user_allowed_in_livestream_chat?(user)
-    allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
-    (allowed_groups & user.groups.ids).any?
-  end
-
   reloadable_patch do
     Topic.prepend DiscourseLivestream::TopicExtension
     Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
