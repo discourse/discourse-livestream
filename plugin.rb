@@ -31,6 +31,11 @@ after_initialize do
     end
   end
 
+  def user_allowed_in_livestream_chat?(user)
+    allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
+    (allowed_groups & user.groups.ids).any?
+  end
+
   reloadable_patch do
     Topic.prepend DiscourseLivestream::TopicExtension
     Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
@@ -84,7 +89,7 @@ after_initialize do
 
         manager = Chat::ChannelMembershipManager.new(membership.chat_channel)
 
-        if DiscourseLivestream::RegisterHelpers.user_allowed_in_livestream_chat?(user)
+        if user_allowed_in_livestream_chat?(user)
           manager.follow(user) if !membership.following
         else
           manager.unfollow(user) if membership.following
@@ -98,8 +103,7 @@ after_initialize do
   register_modifier(:follow_modifier) do |f, channel, user, membership, object|
     topic_chat_channel = DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: channel.id)
 
-    user_allowed_in_topic_chat_channels =
-      DiscourseLivestream::RegisterHelpers.user_allowed_in_livestream_chat?(user)
+    user_allowed_in_topic_chat_channels = user_allowed_in_livestream_chat?(user)
 
     ActiveRecord::Base.transaction do
       if topic_chat_channel && !user_allowed_in_topic_chat_channels
