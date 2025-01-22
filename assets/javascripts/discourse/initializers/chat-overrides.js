@@ -13,7 +13,7 @@ function showCustomBBCode(isGoing = false) {
   });
 }
 
-async function onAcceptInvite({ status, chatChannelsManager, topic }) {
+async function onAcceptInvite({ status }) {
   if (status === "going") {
     showCustomBBCode(true);
     document.body.classList.add("confirmed-event-assistance");
@@ -42,15 +42,8 @@ function overrideChat(api, container) {
 
   events.forEach((event) => {
     appEvents.on(event, (data) => {
-      const topic = container.lookup("controller:topic");
-      const chatChannelsManager = container.lookup(
-        "service:chat-channels-manager"
-      );
-
       onAcceptInvite({
-        ...data,
-        chatChannelsManager,
-        topic,
+        ...data
       });
     });
   });

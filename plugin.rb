@@ -85,4 +85,3 @@ after_initialize do
     Jobs::RecalculateUserLivestreamChannelMemberships.new.execute
   end
 end
-end
