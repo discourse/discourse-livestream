@@ -14,6 +14,7 @@ describe "Discourse Livestream - Topic Livestream with events - Authenticated", 
     SiteSetting.calendar_enabled = true
     SiteSetting.discourse_post_event_enabled = true
     SiteSetting.discourse_post_event_allowed_on_groups = group.id
+    SiteSetting.livestream_chat_allowed_groups = "#{group.id}"
     sign_in(current_user)
   end
 

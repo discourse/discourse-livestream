@@ -22,6 +22,8 @@ require_relative "lib/discourse_livestream/register_helpers"
 require_relative "app/models/discourse_livestream/topic_chat_channel"
 
 after_initialize do
+  require_relative "jobs/regular/recalculate_user_Livestream_channel_memberships"
+
   module ::DiscourseLivestream
     PLUGIN_NAME = "discourse-livestream"
 
@@ -54,18 +56,27 @@ after_initialize do
   end
 
   on(:discourse_post_event_invitee_status_changed) do |invitee|
-    topic = invitee.post.topic
-
-    if (topic_chat_channel = topic.topic_chat_channel) &&
-         invite.status == DiscoursePostEvent::Invitee.statuses[:going]
-      user = User.find(user_id)
+    topic = invitee.event.post.topic
+    topic_chat_channel = topic.topic_chat_channel
+    if topic_chat_channel
+      user = User.find(invitee.user_id)
       channel = topic_chat_channel.chat_channel
-      ChannelMembershipManager.new(channel)
+      manager = Chat::ChannelMembershipManager.new(channel)
 
-      if user_allowed_in_livestream_chat?(user)
-        manager.follow(user) if !membership.following
-      else
-        manager.unfollow(user) if membership.following
+      if invitee.status == DiscoursePostEvent::Invitee.statuses[:going]
+        if user_allowed_in_livestream_chat?(user)
+          membership = manager.follow(user)
+          ::MessageBus.publish "update_livestream_chat_status",
+                               Chat::UserChannelMembershipSerializer.new(membership).to_json
+        else
+          membership = manager.unfollow(user)
+          ::MessageBus.publish "update_livestream_chat_status",
+                               Chat::UserChannelMembershipSerializer.new(membership).to_json
+        end
+      elsif invitee.status != DiscoursePostEvent::Invitee.statuses[:going]
+        membership = manager.unfollow(user)
+        ::MessageBus.publish "update_livestream_chat_status",
+                             Chat::UserChannelMembershipSerializer.new(membership).to_json
       end
     end
   end
@@ -73,76 +84,5 @@ after_initialize do
   on(:site_setting_changed) do |name, old_val, new_val|
     Jobs::RecalculateUserLivestreamChannelMemberships.new.execute
   end
-
-  # register_modifier(:channel_memberships) do |f, user|
-  #   if SiteSetting.calendar_enabled && SiteSetting.discourse_post_event_enabled
-  #     channel_memberships =
-  #       Chat::UserChatChannelMembership
-  #         .joins(chat_channel: { livestream_topic_chat_channel: :topic })
-  #         .where(user: user)
-  #         .includes(chat_channel: { livestream_topic_chat_channel: { topic: { posts: :event } } })
-
-  #     user_id = user.id
-  #     going = DiscoursePostEvent::Invitee.statuses[:going]
-
-  #     query = <<~SQL
-  #       WITH event_posts AS (
-  #         SELECT p.*
-  #         FROM posts p
-  #         JOIN discourse_post_event_invitees dpei ON p.id = dpei.post_id
-  #         WHERE dpei.status = #{going}
-  #           AND dpei.user_id = #{user_id}
-  #       )
-  #       SELECT t.*
-  #       FROM topics t
-  #       JOIN event_posts ep ON t.id = ep.topic_id
-  #     SQL
-
-  #     user_attending_events = Topic.find_by_sql(query)
-
-  #     channel_memberships.each do |membership|
-  #       topic_chat_channel = membership.chat_channel.livestream_topic_chat_channel
-  #       next if !topic_chat_channel
-
-  #       invitees = user_attending_events.select { |topic| topic.id == topic_chat_channel.topic.id }
-  #       is_going = invitees.any?
-  #       next if !is_going
-
-  #       manager = Chat::ChannelMembershipManager.new(membership.chat_channel)
-
-  #       if user_allowed_in_livestream_chat?(user)
-  #         manager.follow(user) if !membership.following
-  #       else
-  #         manager.unfollow(user) if membership.following
-  #       end
-  #     end
-  #   end
-
-  #   Chat::UserChatChannelMembership.where(user: user)
-  # end
-
-  # register_modifier(:follow_modifier) do |f, channel, user, membership, object|
-  #   topic_chat_channel = DiscourseLivestream::TopicChatChannel.find_by(chat_channel_id: channel.id)
-
-  #   user_allowed_in_topic_chat_channels = user_allowed_in_livestream_chat?(user)
-
-  #   ActiveRecord::Base.transaction do
-  #     if topic_chat_channel && !user_allowed_in_topic_chat_channels
-  #       if membership.following
-  #         membership.update!(following: false)
-  #         object.recalculate_user_count
-  #       end
-  #     else
-  #       if membership.new_record?
-  #         membership.save!
-  #         object.recalculate_user_count
-  #       elsif !membership.following
-  #         membership.update!(following: true)
-  #         object.recalculate_user_count
-  #       end
-  #     end
-  #   end
-
-  #   membership
-  # end
+end
 end
