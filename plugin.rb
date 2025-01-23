@@ -21,7 +21,7 @@ require_relative "lib/discourse_livestream/handle_topic_chat_channel_creation"
 require_relative "app/models/discourse_livestream/topic_chat_channel"
 
 after_initialize do
-  require_relative "jobs/regular/recalculate_user_Livestream_channel_memberships"
+  require_relative "jobs/regular/recalculate_user_livestream_channel_memberships"
 
   module ::DiscourseLivestream
     PLUGIN_NAME = "discourse-livestream"
@@ -49,7 +49,7 @@ after_initialize do
     end
   end
 
-  on(:discourse_post_event_invitee_status_changed) do |invitee|
+  on(:discourse_calendar_post_event_invitee_status_changed) do |invitee|
     topic = invitee.event.post.topic
     topic_chat_channel = topic.topic_chat_channel
     if topic_chat_channel
