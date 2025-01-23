@@ -43,7 +43,7 @@ function overrideChat(api, container) {
   events.forEach((event) => {
     appEvents.on(event, (data) => {
       onAcceptInvite({
-        ...data
+        ...data,
       });
     });
   });
