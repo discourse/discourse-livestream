@@ -42,7 +42,7 @@ describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated",
 
     context "when user in allowlisted group" do
       it "opens the chat channel and allows to chat after clicking the header icon" do
-        SiteSetting.livestream_chat_allowed_groups = "#{Group::AUTO_GROUPS[:trust_level_4]}"
+        SiteSetting.livestream_chat_allowed_groups = "#{Group::AUTO_GROUPS[:admins]}"
         topic_livestream.create_livestream_event_topic(composer, topic_page, livestream_tag)
 
         find(".going-button").click

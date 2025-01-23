@@ -18,7 +18,6 @@ Discourse::Application.routes.append { mount ::DiscourseLivestream::Engine, at: 
 require_relative "lib/discourse_livestream/topic_extension"
 require_relative "lib/discourse_livestream/chat_channel_extension"
 require_relative "lib/discourse_livestream/handle_topic_chat_channel_creation"
-require_relative "lib/discourse_livestream/register_helpers"
 require_relative "app/models/discourse_livestream/topic_chat_channel"
 
 after_initialize do
@@ -50,11 +49,6 @@ after_initialize do
     end
   end
 
-  def user_allowed_in_livestream_chat?(user)
-    allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
-    (allowed_groups & user.groups.ids).any?
-  end
-
   on(:discourse_post_event_invitee_status_changed) do |invitee|
     topic = invitee.event.post.topic
     topic_chat_channel = topic.topic_chat_channel
@@ -63,8 +57,11 @@ after_initialize do
       channel = topic_chat_channel.chat_channel
       manager = Chat::ChannelMembershipManager.new(channel)
 
+      allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
+      user_allowed_in_livestream_chat = (allowed_groups & user.groups.ids).any?
+
       if invitee.status == DiscoursePostEvent::Invitee.statuses[:going]
-        if user_allowed_in_livestream_chat?(user)
+        if user_allowed_in_livestream_chat
           membership = manager.follow(user)
           ::MessageBus.publish "update_livestream_chat_status",
                                Chat::UserChannelMembershipSerializer.new(membership).to_json

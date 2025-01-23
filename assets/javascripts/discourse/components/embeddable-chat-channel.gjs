@@ -47,18 +47,6 @@ export default class EmbedableChatChannel extends Component {
     this.activeChannel.currentUserMembership = membership;
   }
 
-  showCustomBBCode(isGoing = false) {
-    // show the content within the [preview] tag if the user is not going to the event
-    document.querySelectorAll(".cooked .preview").forEach((e) => {
-      e.style.setProperty("display", !isGoing ? "block" : "none", "important");
-    });
-
-    // show the content within the [hidden] tag if the user is going to the event
-    document.querySelectorAll(".cooked .hidden").forEach((e) => {
-      e.style.setProperty("display", isGoing ? "block" : "none", "important");
-    });
-  }
-
   @action
   async findChannel(channelId) {
     try {
