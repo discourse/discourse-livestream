@@ -46,6 +46,12 @@ export default class EmbeddableChat extends Chat {
     return topic?.tags?.some?.((tag) => tag === LIVESTREAM_TAG_NAME) || false;
   }
 
+  get isMobileModal() {
+    return (
+      this.siteSettings.enable_modal_chat_on_mobile && this.site.mobileView
+    );
+  }
+
   get chatChannelId() {
     return this.topicController?.model?.chat_channel_id;
   }

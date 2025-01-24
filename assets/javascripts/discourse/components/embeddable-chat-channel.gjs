@@ -31,14 +31,20 @@ export default class EmbedableChatChannel extends Component {
 
   constructor() {
     super(...arguments);
-    this.messageBus.subscribe("discourse_livestream_update_livestream_chat_status", this.onMessage);
+    this.messageBus.subscribe(
+      "discourse_livestream_update_livestream_chat_status",
+      this.onMessage
+    );
   }
 
   willDestroy() {
     super.willDestroy(...arguments);
     this.chatDraftsManager.reset();
     this.embeddableChat.activeChannel = null;
-    this.messageBus.unsubscribe("discourse_livestream_update_livestream_chat_status", this.onMessage);
+    this.messageBus.unsubscribe(
+      "discourse_livestream_update_livestream_chat_status",
+      this.onMessage
+    );
   }
 
   @bind
@@ -62,20 +68,14 @@ export default class EmbedableChatChannel extends Component {
     this.embeddableChat.toggleChatVisibility();
   }
 
-  get isMobileModal() {
-    return (
-      this.siteSettings.enable_modal_chat_on_mobile && this.site.mobileView
-    );
-  }
-
   <template>
     <div
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
-      class={{unless this.isMobileModal "no-modal-mobile"}}
+      class={{unless this.embeddableChat.isMobileModal "no-modal-mobile"}}
       {{didInsert (fn this.findChannel @chatChannelId)}}
     >
-      {{#unless this.isMobileModal}}
+      {{#unless this.embeddableChat.isMobileModal}}
         <div class="c-navbar-container livestream-chat-close">
 
           <DButton
