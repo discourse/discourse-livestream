@@ -63,16 +63,16 @@ after_initialize do
       if invitee.status == DiscoursePostEvent::Invitee.statuses[:going]
         if user_allowed_in_livestream_chat
           membership = manager.follow(user)
-          ::MessageBus.publish "update_livestream_chat_status",
+          ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
                                Chat::UserChannelMembershipSerializer.new(membership).to_json
         else
           membership = manager.unfollow(user)
-          ::MessageBus.publish "update_livestream_chat_status",
+          ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
                                Chat::UserChannelMembershipSerializer.new(membership).to_json
         end
       elsif invitee.status != DiscoursePostEvent::Invitee.statuses[:going]
         membership = manager.unfollow(user)
-        ::MessageBus.publish "update_livestream_chat_status",
+        ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
                              Chat::UserChannelMembershipSerializer.new(membership).to_json
       end
     end

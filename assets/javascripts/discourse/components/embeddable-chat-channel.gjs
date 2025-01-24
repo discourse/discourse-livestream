@@ -31,14 +31,14 @@ export default class EmbedableChatChannel extends Component {
 
   constructor() {
     super(...arguments);
-    this.messageBus.subscribe("update_livestream_chat_status", this.onMessage);
+    this.messageBus.subscribe("discourse_livestream_update_livestream_chat_status", this.onMessage);
   }
 
   willDestroy() {
     super.willDestroy(...arguments);
     this.chatDraftsManager.reset();
     this.embeddableChat.activeChannel = null;
-    this.messageBus.unsubscribe("/merge_user", this.onMessage);
+    this.messageBus.unsubscribe("discourse_livestream_update_livestream_chat_status", this.onMessage);
   }
 
   @bind

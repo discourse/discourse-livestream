@@ -37,7 +37,7 @@ module Jobs
           end
         end
 
-        ::MessageBus.publish "update_livestream_chat_status",
+        ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
                              ::Chat::UserChannelMembershipSerializer.new(membership.reload).to_json
       end
     end
