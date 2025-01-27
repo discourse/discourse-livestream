@@ -79,6 +79,8 @@ after_initialize do
   end
 
   on(:site_setting_changed) do |name, old_val, new_val|
-    Jobs::RecalculateUserLivestreamChannelMemberships.new.execute
+    if name == :livestream_chat_allowed_groups
+      Jobs::RecalculateUserLivestreamChannelMemberships.new.execute
+    end
   end
 end

@@ -3,7 +3,7 @@
 module Jobs
   class RecalculateUserLivestreamChannelMemberships < ::Jobs::Base
     def execute
-      if !SiteSetting.calendar_enabled && !SiteSetting.discourse_post_event_enabled &&
+      if !SiteSetting.calendar_enabled || !SiteSetting.discourse_post_event_enabled ||
            !SiteSetting.discourse_livestream_enabled
         return
       end
