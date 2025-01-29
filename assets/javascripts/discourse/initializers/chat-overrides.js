@@ -13,23 +13,11 @@ function showCustomBBCode(isGoing = false) {
   });
 }
 
-async function onAcceptInvite({ status, chatChannelsManager, topic }) {
+async function onAcceptInvite({ status }) {
   if (status === "going") {
-    if (topic.model.chat_channel_id != null) {
-      const channel = await chatChannelsManager.find(
-        topic.model.chat_channel_id
-      );
-      chatChannelsManager.follow(channel);
-    }
     showCustomBBCode(true);
     document.body.classList.add("confirmed-event-assistance");
   } else if (status !== "going") {
-    if (topic.model.chat_channel_id != null) {
-      const channel = await chatChannelsManager.find(
-        topic.model.chat_channel_id
-      );
-      chatChannelsManager.unfollow(channel);
-    }
     showCustomBBCode(false);
     document.body.classList.remove("confirmed-event-assistance");
   }
@@ -54,15 +42,8 @@ function overrideChat(api, container) {
 
   events.forEach((event) => {
     appEvents.on(event, (data) => {
-      const topic = container.lookup("controller:topic");
-      const chatChannelsManager = container.lookup(
-        "service:chat-channels-manager"
-      );
-
       onAcceptInvite({
         ...data,
-        chatChannelsManager,
-        topic,
       });
     });
   });

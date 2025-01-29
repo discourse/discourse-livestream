@@ -1,3 +1,4 @@
 en:
   site_settings:
     discourse_livestream_enabled: "Enable Discourse Livestream"
+    livestream_chat_allowed_groups: "Only allowlisted groups can chat"
