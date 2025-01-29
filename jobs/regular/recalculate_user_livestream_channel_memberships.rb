@@ -14,7 +14,7 @@ module Jobs
         SELECT u.*
         FROM discourse_post_event_invitees dpei
         JOIN users u ON dpei.user_id = u.id
-        WHERE dpei.status = #{going}
+        WHERE dpei.status = :going
       )
       SELECT uccm.*
         FROM livestream_topic_chat_channels ltcc
@@ -22,17 +22,14 @@ module Jobs
         JOIN user_chat_channel_memberships uccm ON cc.id = uccm.chat_channel_id
         JOIN attending_users au ON au.id = uccm.user_id
       SQL
-
-      memberships = ::Chat::UserChatChannelMembership.find_by_sql(query)
+      memberships = ::Chat::UserChatChannelMembership.find_by_sql([query, { going: going }])
 
       memberships.each do |membership|
         user = membership.user
         ActiveRecord::Base.transaction do
-          if membership.following && !user_allowed_in_livestream_chat?(user)
-            membership.update!(following: false)
-            ::Chat::ChannelMembershipManager.new(membership.chat_channel).recalculate_user_count
-          elsif !membership.following && user_allowed_in_livestream_chat?(user)
-            membership.update!(following: true)
+          is_user_allowed_in_livestream_chat = user_allowed_in_livestream_chat?(user)
+          if membership.following != is_user_allowed_in_livestream_chat
+            membership.update!(following: is_user_allowed_in_livestream_chat)
             ::Chat::ChannelMembershipManager.new(membership.chat_channel).recalculate_user_count
           end
         end

@@ -52,30 +52,25 @@ after_initialize do
   on(:discourse_calendar_post_event_invitee_status_changed) do |invitee|
     topic = invitee.event.post.topic
     topic_chat_channel = topic.topic_chat_channel
-    if topic_chat_channel
-      user = User.find(invitee.user_id)
-      channel = topic_chat_channel.chat_channel
-      manager = Chat::ChannelMembershipManager.new(channel)
 
-      allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
-      user_allowed_in_livestream_chat = (allowed_groups & user.groups.ids).any?
+    next if !topic_chat_channel
 
+    user = User.find(invitee.user_id)
+    channel = topic_chat_channel.chat_channel
+    manager = Chat::ChannelMembershipManager.new(channel)
+
+    allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
+    user_allowed_in_chat = (allowed_groups & user.groups.ids).any?
+
+    membership =
       if invitee.status == DiscoursePostEvent::Invitee.statuses[:going]
-        if user_allowed_in_livestream_chat
-          membership = manager.follow(user)
-          ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
-                               Chat::UserChannelMembershipSerializer.new(membership).to_json
-        else
-          membership = manager.unfollow(user)
-          ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
-                               Chat::UserChannelMembershipSerializer.new(membership).to_json
-        end
-      elsif invitee.status != DiscoursePostEvent::Invitee.statuses[:going]
-        membership = manager.unfollow(user)
-        ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
-                             Chat::UserChannelMembershipSerializer.new(membership).to_json
+        user_allowed_in_chat ? manager.follow(user) : manager.unfollow(user)
+      else
+        manager.unfollow(user)
       end
-    end
+
+    ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
+                         Chat::UserChannelMembershipSerializer.new(membership).to_json
   end
 
   on(:site_setting_changed) do |name, old_val, new_val|
