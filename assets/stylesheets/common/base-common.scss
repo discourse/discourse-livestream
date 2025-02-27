@@ -23,6 +23,10 @@ body.chat-enabled.tag-livestream.confirmed-event-assistance {
   }
 }
 
+html.keyboard-visible .chat-channel {
+  height: 100%;
+}
+
 body.chat-enabled.tag-livestream .chat-channel-preview-card {
   .chat-channel-preview-card__browse-all {
     display: none;
