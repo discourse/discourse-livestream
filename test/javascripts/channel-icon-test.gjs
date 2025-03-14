@@ -18,9 +18,8 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     const modalService = this.owner.lookup("service:modal");
     const showSpy = sinon.spy(modalService, "show");
 
-    this.owner.lookup(
-      "service:site-settings"
-    ).enable_modal_chat_on_mobile = true;
+    this.owner.lookup("service:site-settings").enable_modal_chat_on_mobile =
+      true;
 
     await render(<template><MobileLivestreamChatIcon /></template>);
     await click("button");
@@ -29,9 +28,8 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
   });
 
   test("it toggles chat visibility if enable_modal_chat_on_mobile is false", async function (assert) {
-    this.owner.lookup(
-      "service:site-settings"
-    ).enable_modal_chat_on_mobile = false;
+    this.owner.lookup("service:site-settings").enable_modal_chat_on_mobile =
+      false;
     const embeddableChatService = this.owner.lookup("service:embeddable-chat");
 
     assert.false(
