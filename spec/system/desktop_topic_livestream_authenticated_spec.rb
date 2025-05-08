@@ -17,14 +17,14 @@ describe "Discourse Livestream - Topic Livestream - Desktop - Authenticated", ty
     it "creates a chat channel for livestream topics" do
       topic_livestream.create_livestream_topic(composer, topic_page, livestream_tag)
 
-      expect(topic_page).to have_css("#custom-chat-container", wait: 25)
+      expect(topic_page).to have_css("#custom-chat-container")
       expect(topic_page).to have_css("#custom-chat-container .chat-channel-preview-card")
     end
 
     it "does not create a chat channel for regular topics" do
       topic_livestream.create_regular_topic(composer, topic_page)
 
-      expect(topic_page).not_to have_css("#custom-chat-container", wait: 25)
+      expect(topic_page).not_to have_css("#custom-chat-container")
     end
   end
 end
