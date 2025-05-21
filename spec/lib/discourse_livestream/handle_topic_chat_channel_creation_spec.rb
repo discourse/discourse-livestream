@@ -28,7 +28,10 @@ RSpec.describe DiscourseLivestream do
       context "when the topic has a 'livestream' tag" do
         let(:tag) { Fabricate(:tag, name: "livestream") }
 
-        before { topic.tags << tag }
+        before do
+          SiteSetting.discourse_livestream_enabled = true
+          topic.tags << tag
+        end
 
         it "creates a chat channel" do
           described_class.handle_topic_chat_channel_creation(topic)
@@ -69,6 +72,22 @@ RSpec.describe DiscourseLivestream do
 
           Chat::Channel.first.destroy!
 
+          expect(DiscourseLivestream::TopicChatChannel.count).to eq(0)
+        end
+
+        it "deletes the topic chat channel when the chat channel is soft deleted" do
+          described_class.handle_topic_chat_channel_creation(topic)
+          expect(DiscourseLivestream::TopicChatChannel.count).to eq(1)
+          expect(Chat::Channel.count).to eq(1)
+
+          chat_channel = Chat::Channel.first
+          Chat::TrashChannel.call(
+            guardian: Guardian.new(Fabricate(:admin)),
+            params: {
+              channel_id: chat_channel.id,
+            },
+          )
+          expect(chat_channel.reload).to be_trashed
           expect(DiscourseLivestream::TopicChatChannel.count).to eq(0)
         end
 

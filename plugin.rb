@@ -47,6 +47,10 @@ after_initialize do
     on(:topic_created) do |topic, _, _|
       DiscourseLivestream.handle_topic_chat_channel_creation(topic)
     end
+    on(:chat_channel_trashed) do |channel, user|
+      # If the chat channel is deleted, delete the related TopicChatChannel record
+      DiscourseLivestream::TopicChatChannel.where(chat_channel_id: channel.id).destroy_all
+    end
   end
 
   on(:discourse_calendar_post_event_invitee_status_changed) do |invitee|
