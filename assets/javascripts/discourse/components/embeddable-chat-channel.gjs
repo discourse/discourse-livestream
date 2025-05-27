@@ -5,10 +5,9 @@ import { fn } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import { service } from "@ember/service";
+import { and, not } from "truth-helpers";
 import DButton from "discourse/components/d-button";
 import { bind } from "discourse/lib/decorators";
-import and from "truth-helpers/helpers/and";
-import not from "truth-helpers/helpers/not";
 import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
 import toggleClass from "../modifiers/toggle-class";
 
