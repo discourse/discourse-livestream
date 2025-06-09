@@ -69,8 +69,7 @@ body.tag-livestream.chat-enabled {
 
     // Fix for safari keyboard popup based on core: discourse/app/assets/stylesheets/common/base/compose.scss
     html.keyboard-visible.ios-device & {
-      //height: calc(100% - var(--header-offset, 1vh) - env(keyboard-inset-height)) !important;
-      height: calc(100% - var(--header-offset, 1vh)); // This should be subtracting the keyboard height as but above doesn't seem to work
+      height: calc(100% - var(--header-offset, 1vh));
       top: calc(var(--composer-vh, 1vh) * 100);
       transform: translateY(-100%);
       bottom: unset;
