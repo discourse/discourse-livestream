@@ -63,13 +63,12 @@ body.tag-livestream.chat-enabled {
     resize: both;
     border-top: 1px solid var(--primary-low);
 
-    html.keyboard-visible:not(.ios-device) & {
-      height: calc(100% - var(--header-offset, 1vh));
+    html.keyboard-visible & {
+      height: calc(100% - var(--header-offset, 0px));
     }
 
     // Fix for safari keyboard popup based on core: discourse/app/assets/stylesheets/common/base/compose.scss
     html.keyboard-visible.ios-device & {
-      height: calc(100% - var(--header-offset, 1vh));
       top: calc(var(--composer-vh, 1vh) * 100);
       transform: translateY(-100%);
       bottom: unset;
@@ -100,7 +99,7 @@ body.tag-livestream.chat-enabled {
         }
       }
 
-      html.keybaord-visible & {
+      html.keyboard-visible & {
         min-height: 200px !important; // avoid losing the text box when virtual keyboard is visible
       }
     }
