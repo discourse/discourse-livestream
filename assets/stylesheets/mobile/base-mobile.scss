@@ -57,6 +57,7 @@ body.tag-livestream.chat-enabled {
     left: 0;
     right: 0;
     width: 100%;
+    max-height: 50%;
     height: 400px;
     background: var(--d-sidebar-background);
     z-index: 50;
@@ -64,7 +65,8 @@ body.tag-livestream.chat-enabled {
     border-top: 1px solid var(--primary-low);
 
     html.keyboard-visible & {
-      height: calc(100% - var(--header-offset, 0px));
+      max-height: none;
+      height: calc(var(--composer-vh, 1vh) * 100 - var(--header-offset, 0px));
     }
 
     // Fix for safari keyboard popup based on core: discourse/app/assets/stylesheets/common/base/compose.scss
