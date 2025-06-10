@@ -38,6 +38,11 @@ body.tag-livestream.chat-enabled {
     .livestream-chat-close {
       display: none;
     }
+
+    .chat-composer__wrapper {
+      border-top: 1px solid var(--primary-200);
+      background-color: var(--secondary);
+    }
   }
 
   #custom-chat-container.no-modal-mobile {
@@ -53,26 +58,52 @@ body.tag-livestream.chat-enabled {
     right: 0;
     width: 100%;
     max-height: 50%;
-    padding-bottom: 5rem;
+    height: 400px;
     background: var(--d-sidebar-background);
     z-index: 50;
     resize: both;
-    overflow-y: hidden;
     border-top: 1px solid var(--primary-low);
+
+    html.keyboard-visible & {
+      max-height: none;
+      height: calc(var(--composer-vh, 1vh) * 100 - var(--header-offset, 0px));
+    }
+
+    // Fix for safari keyboard popup based on core: discourse/app/assets/stylesheets/common/base/compose.scss
+    html.keyboard-visible.ios-device & {
+      top: calc(var(--composer-vh, 1vh) * 100);
+      transform: translateY(-100%);
+      bottom: unset;
+    }
 
     .c-navbar-container {
       display: flex;
       padding-top: 0.3rem;
       padding-bottom: 0.3rem;
       width: 100%;
-      height: 5rem;
+      height: 2rem;
     }
 
-    div.chat-drawer {
-      display: flex;
-      overflow-y: auto;
+    .chat-drawer {
       width: 100%;
-      max-height: 100%;
+      height: 100%;
+
+      .chat-channel {
+        height: 100%;
+
+        .chat-messages-scroller {
+          width: 100%;
+        }
+
+        .chat-composer__wrapper {
+          position: relative;
+          bottom: 0;
+        }
+      }
+
+      html.keyboard-visible & {
+        min-height: 200px !important; // avoid losing the text box when virtual keyboard is visible
+      }
     }
 
     .c-navbar__close-drawer-button {
@@ -84,7 +115,7 @@ body.tag-livestream.chat-enabled {
 
     .chat-composer__wrapper {
       position: fixed;
-      bottom: 3rem;
+      bottom: 0;
       background: var(--d-sidebar-background);
       width: 100%;
 
@@ -102,13 +133,27 @@ body.tag-livestream.chat-enabled {
       bottom: 0;
     }
 
+    .d-modal__container {
+      height: 400px;
+    }
+
     .d-modal__body {
-      padding: 1em 0.4em 1em 0.4em;
+      padding: 1em 0.4em 0.4em 0.4em;
+      overflow: hidden;
     }
 
     #custom-chat-container {
       width: 100%;
-      height: 400px !important;
+      height: 100%;
+
+      .chat-drawer {
+        height: 100%;
+        width: 100%;
+
+        .chat-channel {
+          height: 100%;
+        }
+      }
 
       .chat-channel-preview-card p {
         margin-bottom: 0;
