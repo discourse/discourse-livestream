@@ -4,6 +4,8 @@ import { inject as controller } from "@ember/controller";
 import { fn } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
+import didUpdate from "@ember/render-modifiers/modifiers/did-update";
+import { next } from "@ember/runloop";
 import { service } from "@ember/service";
 import { and, not } from "truth-helpers";
 import DButton from "discourse/components/d-button";
@@ -27,6 +29,7 @@ export default class EmbedableChatChannel extends Component {
   @tracked topicChannelId = null;
   @tracked loadingChannel = false;
   @tracked activeChannel;
+  @tracked currentChannelId = null;
 
   constructor() {
     super(...arguments);
@@ -54,6 +57,12 @@ export default class EmbedableChatChannel extends Component {
 
   @action
   async findChannel(channelId) {
+    if (this.currentChannelId === channelId) {
+      return;
+    }
+
+    this.currentChannelId = channelId;
+
     try {
       this.loadingChannel = true;
       this.activeChannel = await this.chatChannelsManager.find(channelId);
@@ -67,12 +76,24 @@ export default class EmbedableChatChannel extends Component {
     this.embeddableChat.toggleChatVisibility();
   }
 
+  @action
+  updateChannel() {
+    if (this.args.chatChannelId === this.currentChannelId) {
+      return;
+    }
+
+    next(() => {
+      this.findChannel(this.args.chatChannelId);
+    });
+  }
+
   <template>
     <div
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
       class={{unless this.embeddableChat.isMobileModal "no-modal-mobile"}}
       {{didInsert (fn this.findChannel @chatChannelId)}}
+      {{didUpdate this.updateChannel @chatChannelId}}
     >
       {{#unless this.embeddableChat.isMobileModal}}
         <div class="c-navbar-container livestream-chat-close">
