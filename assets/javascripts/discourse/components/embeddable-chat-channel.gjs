@@ -29,7 +29,6 @@ export default class EmbedableChatChannel extends Component {
   @tracked topicChannelId = null;
   @tracked loadingChannel = false;
   @tracked activeChannel;
-  @tracked currentChannelId = null;
 
   constructor() {
     super(...arguments);
@@ -57,11 +56,9 @@ export default class EmbedableChatChannel extends Component {
 
   @action
   async findChannel(channelId) {
-    if (this.currentChannelId === channelId) {
+    if (this.activeChannel?.id === channelId) {
       return;
     }
-
-    this.currentChannelId = channelId;
 
     try {
       this.loadingChannel = true;
@@ -78,7 +75,7 @@ export default class EmbedableChatChannel extends Component {
 
   @action
   updateChannel() {
-    if (this.args.chatChannelId === this.currentChannelId) {
+    if (this.args.chatChannelId === this.activeChannel?.id) {
       return;
     }
 
