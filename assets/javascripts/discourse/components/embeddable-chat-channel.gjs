@@ -56,10 +56,6 @@ export default class EmbedableChatChannel extends Component {
 
   @action
   async findChannel(channelId) {
-    if (this.activeChannel?.id === channelId) {
-      return;
-    }
-
     try {
       this.loadingChannel = true;
       this.activeChannel = await this.chatChannelsManager.find(channelId);
