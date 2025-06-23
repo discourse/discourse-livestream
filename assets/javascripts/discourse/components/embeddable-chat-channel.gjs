@@ -1,13 +1,10 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { inject as controller } from "@ember/controller";
-import { fn } from "@ember/helper";
+import { array } from "@ember/helper";
 import { action } from "@ember/object";
-import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
-import { next } from "@ember/runloop";
 import { service } from "@ember/service";
-import { and, not } from "truth-helpers";
+import { modifier } from "ember-modifier";
 import DButton from "discourse/components/d-button";
 import { bind } from "discourse/lib/decorators";
 import ChatChannel from "discourse/plugins/chat/discourse/components/chat-channel";
@@ -27,8 +24,17 @@ export default class EmbedableChatChannel extends Component {
 
   @tracked topicModel = null;
   @tracked topicChannelId = null;
-  @tracked loadingChannel = false;
   @tracked activeChannel;
+
+  updateChannel = modifier(async () => {
+    if (this.args.chatChannelId === this.activeChannel?.id) {
+      return;
+    }
+
+    this.activeChannel = await this.chatChannelsManager.find(
+      this.args.chatChannelId
+    );
+  });
 
   constructor() {
     super(...arguments);
@@ -55,29 +61,8 @@ export default class EmbedableChatChannel extends Component {
   }
 
   @action
-  async findChannel(channelId) {
-    try {
-      this.loadingChannel = true;
-      this.activeChannel = await this.chatChannelsManager.find(channelId);
-    } finally {
-      this.loadingChannel = false;
-    }
-  }
-
-  @action
   closeChat() {
     this.embeddableChat.toggleChatVisibility();
-  }
-
-  @action
-  updateChannel() {
-    if (this.args.chatChannelId === this.activeChannel?.id) {
-      return;
-    }
-
-    next(() => {
-      this.findChannel(this.args.chatChannelId);
-    });
   }
 
   <template>
@@ -85,8 +70,7 @@ export default class EmbedableChatChannel extends Component {
       id="custom-chat-container"
       {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
       class={{unless this.embeddableChat.isMobileModal "no-modal-mobile"}}
-      {{didInsert (fn this.findChannel @chatChannelId)}}
-      {{didUpdate this.updateChannel @chatChannelId}}
+      {{this.updateChannel}}
     >
       {{#unless this.embeddableChat.isMobileModal}}
         <div class="c-navbar-container livestream-chat-close">
@@ -100,8 +84,10 @@ export default class EmbedableChatChannel extends Component {
         </div>
       {{/unless}}
       <div class="chat-drawer">
-        {{#if (and this.activeChannel (not this.loadingChannel))}}
-          <ChatChannel @channel={{this.activeChannel}} />
+        {{#if this.activeChannel}}
+          {{#each (array this.activeChannel) as |channel|}}
+            <ChatChannel @channel={{channel}} />
+          {{/each}}
         {{/if}}
       </div>
     </div>
