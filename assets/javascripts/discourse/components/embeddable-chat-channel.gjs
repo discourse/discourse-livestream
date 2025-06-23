@@ -1,8 +1,6 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { inject as controller } from "@ember/controller";
 import { array } from "@ember/helper";
-import { action } from "@ember/object";
 import { service } from "@ember/service";
 import { modifier } from "ember-modifier";
 import DButton from "discourse/components/d-button";
@@ -14,12 +12,8 @@ export default class EmbedableChatChannel extends Component {
   @service chatChannelsManager;
   @service currentUser;
   @service embeddableChat;
-  @service chatDraftsManager;
   @service messageBus;
-  @controller("topic") topicController;
 
-  @tracked topicModel = null;
-  @tracked topicChannelId = null;
   @tracked activeChannel;
 
   updateChannel = modifier(async () => {
@@ -42,8 +36,6 @@ export default class EmbedableChatChannel extends Component {
 
   willDestroy() {
     super.willDestroy(...arguments);
-    this.chatDraftsManager.reset();
-    this.embeddableChat.activeChannel = null;
     this.messageBus.unsubscribe(
       "discourse_livestream_update_livestream_chat_status",
       this.onMessage
@@ -54,11 +46,6 @@ export default class EmbedableChatChannel extends Component {
   async onMessage(membership) {
     membership = JSON.parse(membership).user_channel_membership;
     this.activeChannel.currentUserMembership = membership;
-  }
-
-  @action
-  closeChat() {
-    this.embeddableChat.toggleChatVisibility();
   }
 
   <template>
@@ -73,7 +60,7 @@ export default class EmbedableChatChannel extends Component {
 
           <DButton
             @icon="xmark"
-            @action={{this.closeChat}}
+            @action={{this.embeddableChat.toggleChatVisibility}}
             @title="chat.close"
             class="btn-transparent no-text c-navbar__close-drawer-button"
           />
