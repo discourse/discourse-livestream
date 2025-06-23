@@ -12,12 +12,8 @@ import toggleClass from "../modifiers/toggle-class";
 
 export default class EmbedableChatChannel extends Component {
   @service chatChannelsManager;
-  @service chatApi;
   @service currentUser;
   @service embeddableChat;
-  @service appEvents;
-  @service site;
-  @service siteSettings;
   @service chatDraftsManager;
   @service messageBus;
   @controller("topic") topicController;
