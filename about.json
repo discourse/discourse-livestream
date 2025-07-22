@@ -1,7 +1,8 @@
 {
   "tests": {
     "requiredPlugins": [
-      "discourse-calendar"
+      "discourse-calendar",
+      "chat"
     ]
   }
 }
