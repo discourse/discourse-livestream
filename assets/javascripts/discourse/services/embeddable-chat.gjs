@@ -10,13 +10,14 @@ export default class EmbeddableChat extends Chat {
   @service site;
   @service router;
   @service currentUser;
+  @service capabilities;
 
   @tracked isMobileChatVisible = false;
 
   canRenderChatChannel(topicController, mobileViewAllowed = false) {
     this.topicController = topicController;
     if (
-      this.site.mobileView === mobileViewAllowed &&
+      this.isMobileViewport === mobileViewAllowed &&
       this.siteSettings.chat_enabled &&
       this.currentUser &&
       this.userCanChat
@@ -48,8 +49,12 @@ export default class EmbeddableChat extends Chat {
 
   get isMobileModal() {
     return (
-      this.siteSettings.enable_modal_chat_on_mobile && this.site.mobileView
+      this.siteSettings.enable_modal_chat_on_mobile && this.isMobileViewport
     );
+  }
+
+  get isMobileViewport() {
+    return !this.capabilities.viewport.lg;
   }
 
   get chatChannelId() {

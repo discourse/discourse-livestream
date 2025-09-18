@@ -1,5 +1,5 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
-import MobileLivestreamChatIcon from "../components/mobile-livestream-chat-icon";
+import ResponsiveLivestreamChatIcon from "../components/responsive-livestream-chat-icon";
 
 function showCustomBBCode(isGoing = false) {
   // show the content within the [preview] tag if the user is not going to the event
@@ -28,7 +28,6 @@ function overrideChat(api, container) {
   const currentUser = api.getCurrentUser();
   const chatService = container.lookup("service:chat");
   const appEvents = container.lookup("service:appEvents");
-  const site = container.lookup("service:site");
 
   if (!currentUser || !siteSettings.chat_enabled || !chatService.userCanChat) {
     return;
@@ -48,11 +47,9 @@ function overrideChat(api, container) {
     });
   });
 
-  if (site.mobileView) {
-    api.headerIcons.add("livestream", MobileLivestreamChatIcon, {
-      before: "chat",
-    });
-  }
+  api.headerIcons.add("livestream", ResponsiveLivestreamChatIcon, {
+    before: "chat",
+  });
 
   api.onPageChange((url) => {
     const store = container.lookup("service:store");
@@ -103,7 +100,7 @@ async function updateEventStylesByStatus(topic, store, currentUser) {
 export default {
   name: "discourse-livestream-chat-sidebar",
   initialize(container) {
-    withPluginApi("1.8.0", (api) => {
+    withPluginApi((api) => {
       overrideChat(api, container);
     });
   },
