@@ -10,7 +10,6 @@ import toggleClass from "../modifiers/toggle-class";
 
 export default class EmbedableChatChannel extends Component {
   @service chatChannelsManager;
-  @service currentUser;
   @service embeddableChat;
   @service messageBus;
 
