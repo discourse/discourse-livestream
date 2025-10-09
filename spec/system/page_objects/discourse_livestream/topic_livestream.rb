@@ -36,7 +36,7 @@ module PageObjects
         tag_chooser.select_row_by_name(tag.name)
         tag_chooser.collapse
 
-        tomorrow = (Time.zone.now + 1.day).strftime("%Y-%m-%d")
+        tomorrow = (1.day.from_now).strftime("%Y-%m-%d")
         composer.fill_content <<~MD
           [event start="#{tomorrow} 13:37" status="public"]
           [/event]
@@ -49,7 +49,7 @@ module PageObjects
         topic_page.open_new_topic
 
         composer.fill_title("Creating a normal event topic")
-        tomorrow = (Time.zone.now + 1.day).strftime("%Y-%m-%d")
+        tomorrow = (1.day.from_now).strftime("%Y-%m-%d")
         composer.fill_content <<~MD
           [event start="#{tomorrow} 13:37" status="public"]
           [/event]

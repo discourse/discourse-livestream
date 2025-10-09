@@ -8,11 +8,11 @@ RSpec.describe Jobs::RecalculateUserLivestreamChannelMemberships do
   fab!(:admin)
   fab!(:user) { Fabricate(:user, trust_level: TrustLevel[1]) }
 
-  fab!(:livestream_channel1) { Fabricate(:category_channel) }
-  fab!(:livestream_channel2) { Fabricate(:category_channel) }
+  fab!(:livestream_channel1, :category_channel)
+  fab!(:livestream_channel2, :category_channel)
 
-  fab!(:normal_channel1) { Fabricate(:category_channel) }
-  fab!(:normal_channel2) { Fabricate(:category_channel) }
+  fab!(:normal_channel1, :category_channel)
+  fab!(:normal_channel2, :category_channel)
 
   fab!(:topic1) { Fabricate(:topic, user: user) }
   fab!(:topic2) { Fabricate(:topic, user: user) }
@@ -49,7 +49,7 @@ RSpec.describe Jobs::RecalculateUserLivestreamChannelMemberships do
     Fabricate(
       :event,
       post: first_post1,
-      original_starts_at: Time.now + 1.hours,
+      original_starts_at: Time.now + 1.hour,
       original_ends_at: Time.now + 2.hours,
     )
   end
@@ -58,7 +58,7 @@ RSpec.describe Jobs::RecalculateUserLivestreamChannelMemberships do
     Fabricate(
       :event,
       post: first_post2,
-      original_starts_at: Time.now + 1.hours,
+      original_starts_at: Time.now + 1.hour,
       original_ends_at: Time.now + 2.hours,
     )
   end

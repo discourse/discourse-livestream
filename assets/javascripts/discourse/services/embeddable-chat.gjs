@@ -7,7 +7,6 @@ export const LIVESTREAM_TAG_NAME = "livestream";
 
 export default class EmbeddableChat extends Chat {
   @service siteSettings;
-  @service site;
   @service router;
   @service currentUser;
   @service capabilities;
