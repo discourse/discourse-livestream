@@ -35,7 +35,10 @@ module Jobs
         end
 
         ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
-                             ::Chat::UserChannelMembershipSerializer.new(membership.reload).to_json
+                             ::Chat::UserChannelMembershipSerializer.new(
+                               membership.reload,
+                               scope: Guardian.new(user),
+                             ).to_json
       end
     end
 
