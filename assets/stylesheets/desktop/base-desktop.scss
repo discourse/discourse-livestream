@@ -1,4 +1,4 @@
-body.tag-livestream.chat-enabled.archetype-regular {
+.tag-livestream.chat-enabled.archetype-regular {
   // we need to fullscreen the header icons to match the chat panel
   // being on the right side of the screen
   .d-header-wrap .wrap {
@@ -24,7 +24,7 @@ body.tag-livestream.chat-enabled.archetype-regular {
     display: flex;
     position: sticky;
     top: var(--header-offset);
-    background: var(--d-sidebar-background);
+    background: var(--d-content-background, var(--secondary));
 
     --1dvh: 1vh;
     align-self: start;

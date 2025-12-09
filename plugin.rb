@@ -74,7 +74,10 @@ after_initialize do
       end
 
     ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
-                         Chat::UserChannelMembershipSerializer.new(membership).to_json
+                         Chat::UserChannelMembershipSerializer.new(
+                           membership,
+                           scope: Guardian.new(user),
+                         ).to_json
   end
 
   on(:site_setting_changed) do |name, old_val, new_val|
