@@ -19,12 +19,16 @@ describe "Discourse Livestream - Topic Livestream - Desktop - Authenticated", ty
 
       expect(topic_page).to have_css("#custom-chat-container")
       expect(topic_page).to have_css("#custom-chat-container .chat-channel-preview-card")
+      expect(topic_page).to have_text(I18n.t("js.discourse_livestream.chat.join_channel_header"))
     end
 
     it "does not create a chat channel for regular topics" do
       topic_livestream.create_regular_topic(composer, topic_page)
 
       expect(topic_page).not_to have_css("#custom-chat-container")
+      expect(topic_page).not_to have_text(
+        I18n.t("js.discourse_livestream.chat.join_channel_header"),
+      )
     end
   end
 end

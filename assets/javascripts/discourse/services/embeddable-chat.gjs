@@ -43,7 +43,12 @@ export default class EmbeddableChat extends Chat {
   }
 
   topicHasLivestreamTag(topic) {
-    return topic?.tags?.some?.((tag) => tag === LIVESTREAM_TAG_NAME) || false;
+    return (
+      topic?.tags?.some?.((tag) => {
+        const tagName = typeof tag === "string" ? tag : tag.name;
+        return tagName === LIVESTREAM_TAG_NAME;
+      }) || false
+    );
   }
 
   get isMobileModal() {
