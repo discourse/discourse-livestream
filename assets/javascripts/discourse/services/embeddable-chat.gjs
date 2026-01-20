@@ -44,6 +44,8 @@ export default class EmbeddableChat extends Chat {
 
   topicHasLivestreamTag(topic) {
     return (
+      // TODO(https://github.com/discourse/discourse/pull/36678): The string check can be
+      // removed using .discourse-compatibility once the PR is merged.
       topic?.tags?.some?.((tag) => {
         const tagName = typeof tag === "string" ? tag : tag.name;
         return tagName === LIVESTREAM_TAG_NAME;
