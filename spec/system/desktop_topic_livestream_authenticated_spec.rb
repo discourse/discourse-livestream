@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe "Discourse Livestream - Topic Livestream - Desktop - Authenticated", type: :system do
+describe "Discourse Livestream - Topic Livestream - Desktop - Authenticated" do
   fab!(:current_user) { Fabricate(:user, refresh_auto_groups: true) }
   fab!(:category)
   fab!(:livestream_tag) { Fabricate(:tag, name: "livestream") }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe "Discourse Livestream - Topic Livestream with events - Authenticated", type: :system do
+describe "Discourse Livestream - Topic Livestream with events - Authenticated" do
   fab!(:group)
   fab!(:current_user) { Fabricate(:user, trust_level: 1, groups: [group]) }
   fab!(:category)
