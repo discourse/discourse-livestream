@@ -14,7 +14,7 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     assert.dom("button").hasClass("icon");
   });
 
-  test("it opens the chat modal if enable_modal_chat_on_mobile is true", async function (assert) {
+  test("opens the chat modal if enable_modal_chat_on_mobile is true", async function (assert) {
     const modalService = this.owner.lookup("service:modal");
     const showSpy = sinon.spy(modalService, "show");
 
@@ -24,10 +24,10 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     await render(<template><MobileLivestreamChatIcon /></template>);
     await click("button");
 
-    assert.ok(showSpy.calledWith(MobileEmbeddableChatModal));
+    assert.true(showSpy.calledWith(MobileEmbeddableChatModal));
   });
 
-  test("it toggles chat visibility if enable_modal_chat_on_mobile is false", async function (assert) {
+  test("toggles chat visibility if enable_modal_chat_on_mobile is false", async function (assert) {
     this.owner.lookup("service:site-settings").enable_modal_chat_on_mobile =
       false;
     const embeddableChatService = this.owner.lookup("service:embeddable-chat");
