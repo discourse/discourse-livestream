@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated",
-         type: :system,
-         mobile: true do
+describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated", mobile: true do
   fab!(:admin)
   fab!(:current_user) { Fabricate(:user, trust_level: TrustLevel[3]) }
   fab!(:livestream_tag) { Fabricate(:tag, name: "livestream") }
