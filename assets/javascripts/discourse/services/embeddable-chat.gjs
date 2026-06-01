@@ -22,7 +22,7 @@ export default class EmbeddableChat extends Chat {
       this.userCanChat
     ) {
       const allowedPaths =
-        this.siteSettings.embeddable_chat_allowed_paths.split("|");
+        this.siteSettings.discourse_livestream_embeddable_chat_allowed_paths.split("|");
       const withinPathsAllowed = allowedPaths.some(
         (path) =>
           this.router.currentURL.includes(path) ||
@@ -55,7 +55,7 @@ export default class EmbeddableChat extends Chat {
 
   get isMobileModal() {
     return (
-      this.siteSettings.enable_modal_chat_on_mobile && this.isMobileViewport
+      this.siteSettings.discourse_livestream_enable_modal_chat_on_mobile && this.isMobileViewport
     );
   }
 

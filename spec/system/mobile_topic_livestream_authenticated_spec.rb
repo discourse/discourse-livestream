@@ -40,7 +40,7 @@ describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated", mob
 
     context "when user in allowlisted group" do
       it "opens the chat channel and allows to chat after clicking the header icon" do
-        SiteSetting.livestream_chat_allowed_groups = "#{Group::AUTO_GROUPS[:admins]}"
+        SiteSetting.discourse_livestream_chat_allowed_groups = Group::AUTO_GROUPS[:admins].to_s
         topic_livestream.create_livestream_event_topic(composer, topic_page, livestream_tag)
 
         find(".going-button").click
@@ -53,8 +53,10 @@ describe "Discourse Livestream - Topic Livestream - Mobile - Authenticated", mob
     end
 
     context "when user not in allowlisted group" do
+      fab!(:group)
+
       it "opens the chat channel and allows to chat after clicking the header icon" do
-        SiteSetting.livestream_chat_allowed_groups = "200"
+        SiteSetting.discourse_livestream_chat_allowed_groups = group.id.to_s
         topic_livestream.create_livestream_event_topic(composer, topic_page, livestream_tag)
 
         find(".going-button").click

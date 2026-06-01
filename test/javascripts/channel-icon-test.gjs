@@ -14,11 +14,11 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     assert.dom("button").hasClass("icon");
   });
 
-  test("opens the chat modal if enable_modal_chat_on_mobile is true", async function (assert) {
+  test("opens the chat modal if discourse_livestream_enable_modal_chat_on_mobile is true", async function (assert) {
     const modalService = this.owner.lookup("service:modal");
     const showSpy = sinon.spy(modalService, "show");
 
-    this.owner.lookup("service:site-settings").enable_modal_chat_on_mobile =
+    this.owner.lookup("service:site-settings").discourse_livestream_enable_modal_chat_on_mobile =
       true;
 
     await render(<template><MobileLivestreamChatIcon /></template>);
@@ -27,8 +27,8 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     assert.true(showSpy.calledWith(MobileEmbeddableChatModal));
   });
 
-  test("toggles chat visibility if enable_modal_chat_on_mobile is false", async function (assert) {
-    this.owner.lookup("service:site-settings").enable_modal_chat_on_mobile =
+  test("toggles chat visibility if discourse_livestream_enable_modal_chat_on_mobile is false", async function (assert) {
+    this.owner.lookup("service:site-settings").discourse_livestream_enable_modal_chat_on_mobile =
       false;
     const embeddableChatService = this.owner.lookup("service:embeddable-chat");
 

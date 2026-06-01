@@ -11,7 +11,7 @@ export default class MobileLivestreamChatIcon extends Component {
 
   @action
   openLivestreamChat() {
-    if (this.siteSettings.enable_modal_chat_on_mobile) {
+    if (this.siteSettings.discourse_livestream_enable_modal_chat_on_mobile) {
       this.modal.show(MobileEmbeddableChatModal);
     } else {
       this.embeddableChat.toggleChatVisibility();

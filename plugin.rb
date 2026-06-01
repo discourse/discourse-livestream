@@ -63,7 +63,7 @@ after_initialize do
     channel = topic_chat_channel.chat_channel
     manager = Chat::ChannelMembershipManager.new(channel)
 
-    allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
+    allowed_groups = SiteSetting.discourse_livestream_chat_allowed_groups.split("|").map(&:to_i)
     user_allowed_in_chat = (allowed_groups & user.groups.ids).any?
 
     membership =

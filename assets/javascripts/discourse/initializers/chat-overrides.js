@@ -54,7 +54,7 @@ function overrideChat(api, container) {
   api.onPageChange((url) => {
     const store = container.lookup("service:store");
     const topic = container.lookup("controller:topic");
-    const allowedPaths = siteSettings.embeddable_chat_allowed_paths.split("|");
+    const allowedPaths = siteSettings.discourse_livestream_embeddable_chat_allowed_paths.split("|");
 
     // non livestream topics
     if (
