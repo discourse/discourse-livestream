@@ -63,8 +63,8 @@ after_initialize do
     channel = topic_chat_channel.chat_channel
     manager = Chat::ChannelMembershipManager.new(channel)
 
-    allowed_groups = SiteSetting.discourse_livestream_chat_allowed_groups.split("|").map(&:to_i)
-    user_allowed_in_chat = (allowed_groups & user.groups.ids).any?
+    user_allowed_in_chat =
+      user.in_any_groups?(SiteSetting.discourse_livestream_chat_allowed_groups_map)
 
     membership =
       if invitee.status == DiscoursePostEvent::Invitee.statuses[:going]
@@ -81,7 +81,7 @@ after_initialize do
   end
 
   on(:site_setting_changed) do |name, old_val, new_val|
-    if name == :livestream_chat_allowed_groups
+    if name == :discourse_livestream_chat_allowed_groups
       Jobs::RecalculateUserLivestreamChannelMemberships.new.execute
     end
   end

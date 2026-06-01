@@ -13,5 +13,3 @@ plugins:
     default: "11" # default group trust_level_1
     client: true
     type: group_list
-
-

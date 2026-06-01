@@ -1,4 +1,6 @@
 en:
   site_settings:
     discourse_livestream_enabled: "Enable Discourse Livestream"
-    livestream_chat_allowed_groups: "Only allowlisted groups can chat"
+    discourse_livestream_chat_allowed_groups: "Only allowlisted groups can chat"
+    discourse_livestream_embeddable_chat_allowed_paths: "Allowed paths for embeddable chat"
+    discourse_livestream_enable_modal_chat_on_mobile: "Enable modal chat on mobile"
