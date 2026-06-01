@@ -2,16 +2,14 @@ plugins:
   discourse_livestream_enabled:
     default: false
     client: true
-  embeddable_chat_allowed_paths:
+  discourse_livestream_embeddable_chat_allowed_paths:
     type: list
     default: "/t"
     client: true
-  enable_modal_chat_on_mobile:
+  discourse_livestream_enable_modal_chat_on_mobile:
     default: true
     client: true
-  livestream_chat_allowed_groups:
+  discourse_livestream_chat_allowed_groups:
     default: "11" # default group trust_level_1
     client: true
     type: group_list
-
-

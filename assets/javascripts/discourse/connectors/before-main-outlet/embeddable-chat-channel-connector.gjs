@@ -11,7 +11,7 @@ export default class EmbedableChatChannelConnector extends Component {
 
   get shouldRender() {
     const mobileViewport =
-      !this.siteSettings.enable_modal_chat_on_mobile &&
+      !this.siteSettings.discourse_livestream_enable_modal_chat_on_mobile &&
       !this.capabilities.viewport.lg;
 
     return this.embeddableChat.canRenderChatChannel(

@@ -45,8 +45,7 @@ module Jobs
     private
 
     def user_allowed_in_livestream_chat?(user)
-      allowed_groups = SiteSetting.livestream_chat_allowed_groups.split("|").map(&:to_i)
-      (allowed_groups & user.groups.ids).any?
+      user.in_any_groups?(SiteSetting.discourse_livestream_chat_allowed_groups_map)
     end
   end
 end

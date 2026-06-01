@@ -95,7 +95,9 @@ RSpec.describe Jobs::RecalculateUserLivestreamChannelMemberships do
   end
 
   describe "when user is not in the allow list" do
-    before { SiteSetting.livestream_chat_allowed_groups = "#{Group::AUTO_GROUPS[:trust_level_4]}" }
+    before do
+      SiteSetting.discourse_livestream_chat_allowed_groups = Group::AUTO_GROUPS[:trust_level_4].to_s
+    end
 
     it "unfollows all livestream channels" do
       run_job
