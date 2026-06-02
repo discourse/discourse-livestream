@@ -33,56 +33,60 @@ after_initialize do
   end
 
   reloadable_patch do
-    Topic.prepend DiscourseLivestream::TopicExtension
-    Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
+    # If the discourse-calendar livestream functionality is enabled,
+    # this plugin is a noop.
+    if !SiteSetting.livestream_enabled
+      Topic.prepend DiscourseLivestream::TopicExtension
+      Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
 
-    add_to_serializer(:topic_view, :chat_channel_id) do
-      return nil if object.topic.topic_chat_channel.blank?
-      object.topic.topic_chat_channel.chat_channel_id
-    end
-
-    on(:post_edited) do |post, _, _|
-      DiscourseLivestream.handle_topic_chat_channel_creation(post.topic)
-    end
-    on(:topic_created) do |topic, _, _|
-      DiscourseLivestream.handle_topic_chat_channel_creation(topic)
-    end
-    on(:chat_channel_trashed) do |channel, user|
-      # If the chat channel is deleted, delete the related TopicChatChannel record
-      DiscourseLivestream::TopicChatChannel.where(chat_channel_id: channel.id).destroy_all
-    end
-  end
-
-  on(:discourse_calendar_post_event_invitee_status_changed) do |invitee|
-    topic = invitee.event.post.topic
-    topic_chat_channel = topic.topic_chat_channel
-
-    next if !topic_chat_channel
-
-    user = User.find(invitee.user_id)
-    channel = topic_chat_channel.chat_channel
-    manager = Chat::ChannelMembershipManager.new(channel)
-
-    user_allowed_in_chat =
-      user.in_any_groups?(SiteSetting.discourse_livestream_chat_allowed_groups_map)
-
-    membership =
-      if invitee.status == DiscoursePostEvent::Invitee.statuses[:going]
-        user_allowed_in_chat ? manager.follow(user) : manager.unfollow(user)
-      else
-        manager.unfollow(user)
+      add_to_serializer(:topic_view, :chat_channel_id) do
+        return nil if object.topic.topic_chat_channel.blank?
+        object.topic.topic_chat_channel.chat_channel_id
       end
 
-    ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
-                         Chat::UserChannelMembershipSerializer.new(
-                           membership,
-                           scope: Guardian.new(user),
-                         ).to_json
-  end
+      on(:post_edited) do |post, _, _|
+        DiscourseLivestream.handle_topic_chat_channel_creation(post.topic)
+      end
+      on(:topic_created) do |topic, _, _|
+        DiscourseLivestream.handle_topic_chat_channel_creation(topic)
+      end
+      on(:chat_channel_trashed) do |channel, user|
+        # If the chat channel is deleted, delete the related TopicChatChannel record
+        DiscourseLivestream::TopicChatChannel.where(chat_channel_id: channel.id).destroy_all
+      end
 
-  on(:site_setting_changed) do |name, old_val, new_val|
-    if name == :discourse_livestream_chat_allowed_groups
-      Jobs::RecalculateUserLivestreamChannelMemberships.new.execute
+      on(:discourse_calendar_post_event_invitee_status_changed) do |invitee|
+        topic = invitee.event.post.topic
+        topic_chat_channel = topic.topic_chat_channel
+
+        next if !topic_chat_channel
+
+        user = User.find(invitee.user_id)
+        channel = topic_chat_channel.chat_channel
+        manager = Chat::ChannelMembershipManager.new(channel)
+
+        user_allowed_in_chat =
+          user.in_any_groups?(SiteSetting.discourse_livestream_chat_allowed_groups_map)
+
+        membership =
+          if invitee.status == DiscoursePostEvent::Invitee.statuses[:going]
+            user_allowed_in_chat ? manager.follow(user) : manager.unfollow(user)
+          else
+            manager.unfollow(user)
+          end
+
+        ::MessageBus.publish "discourse_livestream_update_livestream_chat_status",
+                             Chat::UserChannelMembershipSerializer.new(
+                               membership,
+                               scope: Guardian.new(user),
+                             ).to_json
+      end
+
+      on(:site_setting_changed) do |name, old_val, new_val|
+        if name == :discourse_livestream_chat_allowed_groups
+          Jobs::RecalculateUserLivestreamChannelMemberships.new.execute
+        end
+      end
     end
   end
 end

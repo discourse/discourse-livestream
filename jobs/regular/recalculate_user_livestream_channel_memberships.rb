@@ -3,8 +3,10 @@
 module Jobs
   class RecalculateUserLivestreamChannelMemberships < ::Jobs::Base
     def execute
+      # Note that livestream_enabled is a discourse-calendar setting that makes
+      # this whole plugin a noop.
       if !SiteSetting.calendar_enabled || !SiteSetting.discourse_post_event_enabled ||
-           !SiteSetting.discourse_livestream_enabled
+           !SiteSetting.discourse_livestream_enabled || SiteSetting.livestream_enabled
         return
       end
 
