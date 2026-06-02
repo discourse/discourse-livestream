@@ -35,7 +35,7 @@ after_initialize do
   reloadable_patch do
     # If the discourse-calendar livestream functionality is enabled,
     # this plugin is a noop.
-    if !SiteSetting.livestream_enabled
+    if SiteSetting.respond_to?(:livestream_enabled) && !SiteSetting.livestream_enabled
       Topic.prepend DiscourseLivestream::TopicExtension
       Chat::Channel.prepend DiscourseLivestream::ChatChannelExtension
 
