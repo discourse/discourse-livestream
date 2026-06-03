@@ -4,7 +4,7 @@ module DiscourseLivestream
   def self.handle_topic_chat_channel_creation(topic)
     # Note that livestream_enabled is a discourse-calendar setting that makes
     # this whole plugin a noop.
-    return if SiteSetting.respond_to?(:livestream_enabled) && !SiteSetting.livestream_enabled
+    return if SiteSetting.respond_to?(:livestream_enabled) && SiteSetting.livestream_enabled
     return if topic.category.blank?
     return if DiscourseLivestream::TopicChatChannel.exists?(topic_id: topic.id)
     return if topic.tags.blank? || topic.tags.none? { |tag| tag.name == "livestream" }
