@@ -4,7 +4,7 @@ import { service } from "@ember/service";
 import EmbeddableChatChannel from "../../components/embeddable-chat-channel";
 
 export default class EmbedableChatChannelConnector extends Component {
-  @service embeddableChat;
+  @service livestreamEmbeddableChat;
   @service siteSettings;
   @service capabilities;
   @controller("topic") topicController;
@@ -14,7 +14,13 @@ export default class EmbedableChatChannelConnector extends Component {
       !this.siteSettings.discourse_livestream_enable_modal_chat_on_mobile &&
       !this.capabilities.viewport.lg;
 
-    return this.embeddableChat.canRenderChatChannel(
+    // If the core discourse-calendar livestream is enabled, this
+    // plugin should be a noop.
+    if (this.siteSettings.livestream_enabled) {
+      return false;
+    }
+
+    return this.livestreamEmbeddableChat.canRenderChatChannel(
       this.topicController,
       mobileViewport
     );
@@ -23,7 +29,7 @@ export default class EmbedableChatChannelConnector extends Component {
   <template>
     {{#if this.shouldRender}}
       <EmbeddableChatChannel
-        @chatChannelId={{this.embeddableChat.chatChannelId}}
+        @chatChannelId={{this.livestreamEmbeddableChat.chatChannelId}}
       />
     {{/if}}
   </template>

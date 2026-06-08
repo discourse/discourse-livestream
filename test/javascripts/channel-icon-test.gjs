@@ -32,10 +32,12 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     this.owner.lookup(
       "service:site-settings"
     ).discourse_livestream_enable_modal_chat_on_mobile = false;
-    const embeddableChatService = this.owner.lookup("service:embeddable-chat");
+    const livestreamEmbeddableChatService = this.owner.lookup(
+      "service:livestream-embeddable-chat"
+    );
 
     assert.false(
-      embeddableChatService.isMobileChatVisible,
+      livestreamEmbeddableChatService.isMobileChatVisible,
       "Initial state isMobileChatVisible is false"
     );
 
@@ -43,14 +45,14 @@ module("Integration | Component | MobileLivestreamChatIcon", function (hooks) {
     await click("button");
 
     assert.true(
-      embeddableChatService.isMobileChatVisible,
+      livestreamEmbeddableChatService.isMobileChatVisible,
       "isMobileChatVisible is true after clicking button"
     );
 
     await click("button");
 
     assert.false(
-      embeddableChatService.isMobileChatVisible,
+      livestreamEmbeddableChatService.isMobileChatVisible,
       "isMobileChatVisible is false after clicking button again"
     );
   });

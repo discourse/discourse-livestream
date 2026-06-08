@@ -6,7 +6,7 @@ import MobileEmbeddableChatModal from "./modal/mobile-embeddable-chat-modal";
 
 export default class MobileLivestreamChatIcon extends Component {
   @service modal;
-  @service embeddableChat;
+  @service livestreamEmbeddableChat;
   @service siteSettings;
 
   @action
@@ -14,7 +14,7 @@ export default class MobileLivestreamChatIcon extends Component {
     if (this.siteSettings.discourse_livestream_enable_modal_chat_on_mobile) {
       this.modal.show(MobileEmbeddableChatModal);
     } else {
-      this.embeddableChat.toggleChatVisibility();
+      this.livestreamEmbeddableChat.toggleChatVisibility();
     }
   }
 

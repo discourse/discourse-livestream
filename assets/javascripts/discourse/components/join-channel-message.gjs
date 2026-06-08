@@ -6,13 +6,14 @@ import concatClass from "discourse/helpers/concat-class";
 import { i18n } from "discourse-i18n";
 
 export default class JoinChannelMessage extends Component {
-  @service embeddableChat;
+  @service livestreamEmbeddableChat;
   @controller("topic") topicController;
 
   get shouldRenderJoinText() {
     const topic = this.topicController?.model;
     return (
-      topic?.chat_channel_id && this.embeddableChat.topicHasLivestreamTag(topic)
+      topic?.chat_channel_id &&
+      this.livestreamEmbeddableChat.topicHasLivestreamTag(topic)
     );
   }
 
