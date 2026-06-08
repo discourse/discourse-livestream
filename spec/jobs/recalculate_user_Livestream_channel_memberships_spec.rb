@@ -18,10 +18,18 @@ RSpec.describe Jobs::RecalculateUserLivestreamChannelMemberships do
   fab!(:topic2) { Fabricate(:topic, user: user) }
 
   fab!(:topic_chat_channel1) do
-    Fabricate(:topic_chat_channel, topic: topic1, chat_channel: livestream_channel1)
+    Fabricate(
+      :discourse_livestream_topic_chat_channel,
+      topic: topic1,
+      chat_channel: livestream_channel1,
+    )
   end
   fab!(:topic_chat_channel2) do
-    Fabricate(:topic_chat_channel, topic: topic2, chat_channel: livestream_channel2)
+    Fabricate(
+      :discourse_livestream_topic_chat_channel,
+      topic: topic2,
+      chat_channel: livestream_channel2,
+    )
   end
 
   fab!(:first_post1) { Fabricate(:post, topic: topic1) }
@@ -73,7 +81,7 @@ RSpec.describe Jobs::RecalculateUserLivestreamChannelMemberships do
 
   fab!(:post_event_invitee1) do
     Fabricate(
-      :post_event_invitee,
+      :discourse_livestream_post_event_invitee,
       event: event1,
       user: user,
       status: DiscoursePostEvent::Invitee.statuses[:going],
@@ -82,7 +90,7 @@ RSpec.describe Jobs::RecalculateUserLivestreamChannelMemberships do
 
   fab!(:post_event_invitee2) do
     Fabricate(
-      :post_event_invitee,
+      :discourse_livestream_post_event_invitee,
       event: event2,
       user: user,
       status: DiscoursePostEvent::Invitee.statuses[:going],
