@@ -6,7 +6,7 @@ import DModal from "discourse/components/d-modal";
 import EmbeddableChatChannel from "../embeddable-chat-channel";
 
 export default class MobileEmbeddableChatModal extends Component {
-  @service embeddableChat;
+  @service livestreamEmbeddableChat;
   @service capabilities;
   @controller("topic") topicController;
 
@@ -17,7 +17,10 @@ export default class MobileEmbeddableChatModal extends Component {
   };
 
   get shouldRender() {
-    return this.embeddableChat.canRenderChatChannel(this.topicController, true);
+    return this.livestreamEmbeddableChat.canRenderChatChannel(
+      this.topicController,
+      true
+    );
   }
 
   <template>
@@ -30,7 +33,7 @@ export default class MobileEmbeddableChatModal extends Component {
       <:body>
         {{#if this.shouldRender}}
           <EmbeddableChatChannel
-            @chatChannelId={{this.embeddableChat.chatChannelId}}
+            @chatChannelId={{this.livestreamEmbeddableChat.chatChannelId}}
           />
         {{/if}}
       </:body>

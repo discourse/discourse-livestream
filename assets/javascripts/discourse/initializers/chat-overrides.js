@@ -33,6 +33,12 @@ function overrideChat(api, container) {
     return;
   }
 
+  // If the core discourse-calendar livestream is enabled, this
+  // plugin should be a noop.
+  if (siteSettings.livestream_enabled) {
+    return;
+  }
+
   const events = [
     "calendar:update-invitee-status",
     "calendar:create-invitee-status",

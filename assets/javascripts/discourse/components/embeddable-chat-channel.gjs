@@ -10,7 +10,7 @@ import toggleClass from "../modifiers/toggle-class";
 
 export default class EmbedableChatChannel extends Component {
   @service chatChannelsManager;
-  @service embeddableChat;
+  @service livestreamEmbeddableChat;
   @service messageBus;
 
   @tracked activeChannel;
@@ -50,16 +50,19 @@ export default class EmbedableChatChannel extends Component {
   <template>
     <div
       id="custom-chat-container"
-      {{toggleClass this.embeddableChat.isMobileChatVisible "mobile"}}
-      class={{unless this.embeddableChat.isMobileModal "no-modal-mobile"}}
+      {{toggleClass this.livestreamEmbeddableChat.isMobileChatVisible "mobile"}}
+      class={{unless
+        this.livestreamEmbeddableChat.isMobileModal
+        "no-modal-mobile"
+      }}
       {{this.updateChannel}}
     >
-      {{#unless this.embeddableChat.isMobileModal}}
+      {{#unless this.livestreamEmbeddableChat.isMobileModal}}
         <div class="c-navbar-container livestream-chat-close">
 
           <DButton
             @icon="xmark"
-            @action={{this.embeddableChat.toggleChatVisibility}}
+            @action={{this.livestreamEmbeddableChat.toggleChatVisibility}}
             @title="chat.close"
             class="btn-transparent no-text c-navbar__close-drawer-button"
           />

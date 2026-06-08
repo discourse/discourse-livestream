@@ -5,7 +5,7 @@ import Chat from "discourse/plugins/chat/discourse/services/chat";
 
 export const LIVESTREAM_TAG_NAME = "livestream";
 
-export default class EmbeddableChat extends Chat {
+export default class LivestreamEmbeddableChat extends Chat {
   @service siteSettings;
   @service router;
   @service currentUser;
@@ -17,6 +17,7 @@ export default class EmbeddableChat extends Chat {
     this.topicController = topicController;
     if (
       this.isMobileViewport === mobileViewAllowed &&
+      this.siteSettings.discourse_livestream_enabled &&
       this.siteSettings.chat_enabled &&
       this.currentUser &&
       this.userCanChat
