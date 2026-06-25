@@ -13,10 +13,10 @@ end
 # Table name: livestream_topic_chat_channels
 #
 #  id              :bigint           not null, primary key
-#  topic_id        :integer          not null
-#  chat_channel_id :bigint           not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  chat_channel_id :bigint           not null
+#  topic_id        :bigint           not null
 #
 # Indexes
 #
