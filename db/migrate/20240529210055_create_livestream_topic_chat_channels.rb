@@ -2,7 +2,7 @@
 
 class CreateLivestreamTopicChatChannels < ActiveRecord::Migration[7.0]
   def change
-    create_table :livestream_topic_chat_channels do |t|
+    create_table :livestream_topic_chat_channels, if_not_exists: true do |t|
       t.integer :topic_id, null: false
       t.integer :chat_channel_id, null: false
       t.timestamps
@@ -11,6 +11,7 @@ class CreateLivestreamTopicChatChannels < ActiveRecord::Migration[7.0]
     add_index :livestream_topic_chat_channels,
               %i[topic_id chat_channel_id],
               unique: true,
-              name: "unique_livestream_topic_chat_channels"
+              name: "unique_livestream_topic_chat_channels",
+              if_not_exists: true
   end
 end
