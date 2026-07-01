@@ -1,6 +1,7 @@
 import Component from "@glimmer/component";
 import { inject as controller } from "@ember/controller";
 import { service } from "@ember/service";
+import bodyClass from "discourse/helpers/body-class";
 import MobileLivestreamChatIcon from "./mobile-livestream-chat-icon";
 
 export default class ResponsiveLivestreamChatIcon extends Component {
@@ -16,6 +17,7 @@ export default class ResponsiveLivestreamChatIcon extends Component {
 
   <template>
     {{#if this.shouldShow}}
+      {{bodyClass "livestream-topic"}}
       <MobileLivestreamChatIcon />
     {{/if}}
   </template>
